@@ -4,6 +4,9 @@ Local analysis of AncestryDNA raw data. No data leaves your machine.
 
 ## Usage
 
+1. Place your `AncestryDNA.txt` file in this directory
+2. Run the analysis:
+
 ```bash
 uv run python analyze_dna.py AncestryDNA.txt
 
