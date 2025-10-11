@@ -43,8 +43,8 @@ TIER1_PHARMACOGENOMICS = {
         'gene': 'CYP2C9', 'drug': 'Warfarin',
         'evidence': 'FDA Table, CPIC Level A',
         'CC': 'Normal metabolism (*1/*1) - standard dosing',
-        'CT': 'Intermediate (*1/*2) - may need 15-30% lower dose',
-        'TT': 'Poor metabolism (*2/*2) - may need 40-50% lower dose',
+        'CT': 'Intermediate (*1/*2) - ~20% reduced metabolism, may need 15-30% lower dose',
+        'TT': 'Reduced metabolism (*2/*2) - ~40% reduction, may need 40-50% lower dose',
     },
     'rs1057910': {  # CYP2C9*3
         'gene': 'CYP2C9', 'drug': 'Warfarin',
@@ -85,8 +85,8 @@ TIER1_PHARMACOGENOMICS = {
         'gene': 'CYP2B6', 'drug': 'Efavirenz (HIV)',
         'evidence': 'FDA Table, CPIC',
         'GG': 'Normal metabolizer',
-        'GT': 'Intermediate (*1/*6)',
-        'TT': 'Slow metabolizer (*6/*6) - higher side effects',
+        'GT': 'Intermediate (*1/*6) - may have altered efavirenz response',
+        'TT': 'Slow metabolizer (*6/*6) - reduced enzyme activity, higher side effects, lower doses needed',
     },
     'rs1801133': {  # MTHFR C677T
         'gene': 'MTHFR', 'drug': 'Methotrexate, 5-FU chemo',
@@ -133,9 +133,9 @@ TIER1_PHARMACOGENOMICS = {
     'rs9923231': {  # VKORC1
         'gene': 'VKORC1', 'drug': 'Warfarin',
         'evidence': 'FDA Table, CPIC - primary warfarin sensitivity',
-        'CC': 'Low sensitivity - need higher dose',
-        'CT': 'Intermediate sensitivity',
-        'TT': 'High sensitivity - need lower dose',
+        'CC': 'Normal warfarin sensitivity - standard dosing',
+        'CT': 'Increased sensitivity - reduced warfarin dose needed',
+        'TT': 'High sensitivity - significantly reduced dose needed, higher bleeding risk',
     },
     'rs8175347': {  # UGT1A1*28
         'gene': 'UGT1A1', 'drug': 'Irinotecan (chemo)',
@@ -156,16 +156,16 @@ TIER1_CARDIOVASCULAR = {
     },
     'rs7412': {  # APOE ε2
         'gene': 'APOE', 'condition': 'Alzheimer disease',
-        'evidence': 'Well-established',
-        'CC': 'ε4 contributor (or ε3 with rs429358 CC)',
-        'CT': 'ε3 contributor (or ε2 carrier)',
-        'TT': 'ε2/ε2 - protective against Alzheimer',
+        'evidence': 'Well-established (interpret with rs429358)',
+        'CC': 'T allele absent (check rs429358: if CC=ε4/ε4, if CT=ε3/ε4, if TT=ε3/ε3)',
+        'CT': 'One T allele (check rs429358: if TT=ε2/ε3)',
+        'TT': 'Two T alleles (check rs429358: if TT=ε2/ε2 protective)',
     },
     'rs1333049': {  # 9p21
         'gene': 'CDKN2A/B', 'condition': 'Coronary artery disease',
-        'evidence': 'GWAS P<10^-50, OR ~1.3',
-        'CC': 'Elevated CAD risk (~1.3x)',
-        'CG': 'Moderate CAD risk (~1.15x)',
+        'evidence': 'GWAS P<10^-50, OR 1.9',
+        'CC': 'Elevated CAD risk (~1.9x)',
+        'CG': 'Moderate CAD risk (~1.5x)',
         'GG': 'Typical CAD risk',
     },
     'rs6025': {  # Factor V Leiden
@@ -221,10 +221,10 @@ HEALTH_METABOLIC = {
     },
     'rs1801282': {  # PPARG Pro12Ala
         'gene': 'PPARG', 'condition': 'Insulin sensitivity',
-        'evidence': 'Meta-analysis OR 0.86',
-        'CC': 'Typical insulin sensitivity',
-        'CG': 'Slightly better',
-        'GG': 'Better insulin sensitivity, 14% lower T2D risk',
+        'evidence': 'Complex effects on metabolism',
+        'CC': 'Normal fat metabolism (Pro/Pro)',
+        'CG': 'Pro/Ala - altered metabolism (conflicting evidence)',
+        'GG': 'Ala/Ala - altered metabolism (conflicting evidence)',
     },
     'rs5219': {  # KCNJ11
         'gene': 'KCNJ11', 'condition': 'Type 2 diabetes',
@@ -298,16 +298,16 @@ HEALTH_CANCER = {
     'rs1042522': {  # TP53
         'gene': 'TP53', 'condition': 'Tumor suppressor (Arg72Pro)',
         'evidence': 'Functional variant',
-        'GG': 'Pro/Pro (better apoptosis)',
-        'CG': 'Pro/Arg (heterozygous)',
-        'CC': 'Arg/Arg (better DNA repair)',
+        'GG': 'Arg/Arg (better DNA repair)',
+        'CG': 'Arg/Pro (heterozygous)',
+        'CC': 'Pro/Pro (better apoptosis)',
     },
-    'rs17849079': {  # NBN
-        'gene': 'NBN', 'condition': 'Breast cancer risk',
-        'evidence': 'DNA repair gene',
+    'rs17849079': {  # PIK3CA
+        'gene': 'PIK3CA', 'condition': 'Cowden syndrome',
+        'evidence': 'PI3K-AKT pathway',
         'GG': 'Normal risk',
         'GT': 'Slightly elevated risk',
-        'TT': '2x breast cancer risk',
+        'TT': 'Elevated risk',
     },
     'rs2227983': {  # EGFR
         'gene': 'EGFR', 'condition': 'Lung cancer (protective)',
@@ -316,8 +316,8 @@ HEALTH_CANCER = {
         'AG': 'Moderate protection',
         'GG': 'Better protection against lung cancer',
     },
-    'rs4073': {  # IL8
-        'gene': 'IL8', 'condition': 'Various cancers',
+    'rs4073': {  # CXCL8
+        'gene': 'CXCL8', 'condition': 'Various cancers',
         'evidence': 'Inflammation marker',
         'AA': 'Lower IL-8',
         'AT': 'Moderate',
@@ -343,9 +343,9 @@ HEALTH_COVID19 = {
     'rs10490770': {  # COVID-19 severity (3p21.31)
         'gene': 'LZTFL1', 'condition': 'COVID-19 severity',
         'evidence': 'GWAS - Nature 2020',
-        'CC': 'Lower risk of severe COVID',
-        'CT': 'Moderate risk',
-        'TT': '2x risk of severe COVID-19',
+        'AA': 'Lower risk of severe COVID',
+        'AG': 'Moderate risk (~1.7x)',
+        'GG': '2x risk of severe COVID-19',
     },
     'rs657152': {  # ABO blood type
         'gene': 'ABO', 'condition': 'Blood type (COVID-19 susceptibility)',
@@ -378,12 +378,12 @@ HEALTH_AUTOIMMUNE = {
         'CT': 'Low-moderate risk',
         'TT': 'Elevated risk',
     },
-    'rs6457620': {  # HLA-DQB1
-        'gene': 'HLA-DQB1', 'condition': 'Celiac disease',
-        'evidence': 'HLA region',
+    'rs6457620': {  # HLA region
+        'gene': 'HLA region', 'condition': 'Rheumatoid arthritis',
+        'evidence': 'HLA association',
         'CC': 'Lower risk',
         'CT': 'Moderate risk',
-        'TT': 'Higher celiac risk',
+        'TT': 'Higher RA risk',
     },
 }
 
@@ -617,7 +617,7 @@ MOOD_DOPAMINE = {
     },
     'rs4633': {  # COMT
         'gene': 'COMT', 'system': 'Dopamine',
-        'effect': 'Cognitive performance',
+        'effect': 'Endometrial cancer risk',
         'CC': 'Lower activity',
         'CT': 'Intermediate',
         'TT': 'Higher COMT activity',
@@ -683,14 +683,14 @@ MOOD_DOPAMINE = {
 MOOD_NEUROPLASTICITY = {
     'rs6265': {  # BDNF Val66Met
         'gene': 'BDNF', 'system': 'Brain-derived neurotrophic factor',
-        'effect': 'Learning, memory, depression',
+        'effect': 'Learning, memory, stress response',
         'GG': 'Val/Val - better memory, learning',
         'GA': 'Val/Met - intermediate, impaired motor learning',
-        'AA': 'Met/Met - reduced BDNF, depression risk, worse memory',
+        'AA': 'Met/Met - reduced BDNF, impaired memory but may be depression resistant',
     },
     'rs11030104': {  # BDNF
         'gene': 'BDNF', 'system': 'Neuroplasticity',
-        'effect': 'Depression, antidepressant response',
+        'effect': 'BMI, Alzheimer disease, bipolar disorder',
         'AA': 'Typical',
         'AG': 'Moderate',
         'GG': 'Altered response',
@@ -791,15 +791,15 @@ MOOD_ANXIETY_STRESS = {
         'CT': 'Moderate',
         'TT': 'Reduced empathy',
     },
-    'rs13212041': {  # SLC6A4
-        'gene': 'SLC6A4', 'system': 'Serotonin transporter',
+    'rs13212041': {  # HTR1B
+        'gene': 'HTR1B', 'system': 'Serotonin receptor 1B',
         'effect': 'Anxiety, depression',
         'AA': 'Lower anxiety',
         'AG': 'Moderate',
         'GG': 'Higher anxiety tendency',
     },
-    'rs3813034': {  # HTR1B
-        'gene': 'HTR1B', 'system': 'Serotonin 1B receptor',
+    'rs3813034': {  # SLC6A4
+        'gene': 'SLC6A4', 'system': 'Serotonin transporter',
         'effect': 'Aggression, substance abuse',
         'CC': 'Typical',
         'CT': 'Moderate',
@@ -815,29 +815,29 @@ MOOD_ANXIETY_STRESS = {
 }
 
 MOOD_OTHER = {
-    'rs2230739': {  # GRIK4
-        'gene': 'GRIK4', 'system': 'Glutamate receptor',
+    'rs2230739': {  # ADCY9
+        'gene': 'ADCY9', 'system': 'Adenylyl cyclase',
         'effect': 'Depression, antidepressant response',
         'CC': 'Better response',
         'CT': 'Moderate',
         'TT': 'Poorer antidepressant response',
     },
-    'rs12922317': {  # GRIK4
-        'gene': 'GRIK4', 'system': 'Glutamate',
+    'rs12922317': {  # SNX29
+        'gene': 'SNX29', 'system': 'Sorting nexin',
         'effect': 'Depression',
         'GG': 'Lower risk',
         'GA': 'Moderate',
         'AA': 'Higher depression risk',
     },
-    'rs4675690': {  # GRIN2B
-        'gene': 'GRIN2B', 'system': 'NMDA receptor',
+    'rs4675690': {  # CREB1
+        'gene': 'CREB1', 'system': 'cAMP response element-binding protein',
         'effect': 'Learning, memory, schizophrenia',
         'CC': 'Typical',
         'CT': 'Moderate',
         'TT': 'Altered function',
     },
-    'rs2049045': {  # MTHFR
-        'gene': 'MTHFR', 'system': 'Folate (affects mood)',
+    'rs2049045': {  # BDNF
+        'gene': 'BDNF', 'system': 'Brain-derived neurotrophic factor',
         'effect': 'Depression (via neurotransmitter synthesis)',
         'AA': 'Normal',
         'AG': 'Moderate',
@@ -886,8 +886,8 @@ TRAITS_APPEARANCE = {
         'AG': 'Mixed',
         'GG': 'Lighter eyes',
     },
-    'rs12896399': {  # SLC45A2
-        'gene': 'SLC45A2', 'trait': 'Hair color',
+    'rs12896399': {  # SLC24A4
+        'gene': 'SLC24A4', 'trait': 'Hair color',
         'evidence': 'Pigmentation',
         'GG': 'Dark hair',
         'GT': 'Mixed',
@@ -916,17 +916,17 @@ TRAITS_APPEARANCE = {
     },
     'rs11547464': {  # MC1R
         'gene': 'MC1R', 'trait': 'Red hair',
-        'evidence': 'Red hair',
-        'AA': 'Non-red',
-        'AG': 'Carrier',
-        'GG': 'Red hair',
+        'evidence': 'Red hair variant',
+        'AA': 'Red hair likely',
+        'AG': 'Red hair carrier',
+        'GG': 'Non-red hair',
     },
     'rs1110400': {  # MC1R
-        'gene': 'MC1R', 'trait': 'Hair color',
-        'evidence': 'MC1R region',
-        'CC': 'Darker',
-        'CT': 'Mixed',
-        'TT': 'Lighter',
+        'gene': 'MC1R', 'trait': 'Melanoma risk',
+        'evidence': 'MC1R region - ClinVar pathogenic',
+        'CC': 'Higher melanoma risk',
+        'CT': 'Moderate risk',
+        'TT': 'Lower risk',
     },
     'rs17646946': {  # TCHH
         'gene': 'TCHH', 'trait': 'Hair texture',
@@ -987,8 +987,8 @@ TRAITS_BODY = {
         'CG': 'Intermediate',
         'GG': 'Reduced response',
     },
-    'rs6570507': {  # GDF5
-        'gene': 'GDF5', 'trait': 'Height',
+    'rs6570507': {  # ADGRG6
+        'gene': 'ADGRG6', 'trait': 'Height',
         'evidence': 'Growth factor',
         'CC': 'Shorter tendency',
         'CT': 'Average',
@@ -997,9 +997,9 @@ TRAITS_BODY = {
     'rs1042725': {  # HMGA2
         'gene': 'HMGA2', 'trait': 'Height',
         'evidence': '~0.4cm per C allele',
-        'AA': 'Shorter',
-        'AC': 'Average',
-        'CC': 'Taller',
+        'TT': 'Shorter',
+        'TC': 'Average (+0.4cm)',
+        'CC': 'Taller (+0.8cm)',
     },
     'rs17822931': {  # ABCC11
         'gene': 'ABCC11', 'trait': 'Earwax type/body odor',
@@ -1019,7 +1019,7 @@ TRAITS_METABOLISM = {
         'TT': 'Lactose tolerant (can digest milk)',
     },
     'rs182549': {  # LCT
-        'gene': 'LCT', 'trait': 'Lactose tolerance',
+        'gene': 'LCT', 'trait': 'Lactose intolerance',
         'evidence': 'Additional variant',
         'CC': 'Intolerant',
         'CT': 'Likely tolerant',
@@ -1060,9 +1060,9 @@ TRAITS_METABOLISM = {
         'AC': 'Normal metabolism',
         'CC': 'Normal metabolism',
     },
-    'rs2472297': {  # CYP1A2
-        'gene': 'CYP1A2', 'trait': 'Caffeine',
-        'evidence': 'Metabolism',
+    'rs2472297': {  # Between CYP1A1 and CYP1A2
+        'gene': 'Between CYP1A1/CYP1A2', 'trait': 'Caffeine',
+        'evidence': 'Metabolism (intergenic region)',
         'CC': 'Fast',
         'CT': 'Intermediate',
         'TT': 'Slower',
@@ -1076,10 +1076,10 @@ TRAITS_METABOLISM = {
     },
     'rs1051730': {  # CHRNA3
         'gene': 'CHRNA3', 'trait': 'Nicotine dependence',
-        'evidence': 'Smoking',
-        'AA': 'Higher risk',
-        'AG': 'Moderate',
-        'GG': 'Lower risk',
+        'evidence': 'Smoking, lung cancer',
+        'CC': 'Lower risk (fewer cigarettes if smoker)',
+        'CT': 'Moderate (1.3x lung cancer risk)',
+        'TT': 'Higher risk (1.8x lung cancer risk)',
     },
     'rs72921001': {  # OR6A2
         'gene': 'OR6A2', 'trait': 'Cilantro taste',
@@ -1088,8 +1088,8 @@ TRAITS_METABOLISM = {
         'AG': 'May taste soapy',
         'GG': 'Soapy taste',
     },
-    'rs4481887': {  # OR2M7
-        'gene': 'OR2M7', 'trait': 'Asparagus odor detection',
+    'rs4481887': {  # Intergenic
+        'gene': 'Intergenic', 'trait': 'Asparagus odor detection',
         'evidence': 'Olfactory',
         'AA': 'Can smell',
         'AG': 'Can smell',
@@ -1112,15 +1112,8 @@ TRAITS_SLEEP_CIRCADIAN = {
         'AG': 'Normal',
         'GG': 'More deep sleep',
     },
-    'rs12927162': {  # PER2
-        'gene': 'PER2', 'trait': 'Circadian rhythm',
-        'effect': 'Sleep timing',
-        'CC': 'Earlier sleep preference',
-        'CT': 'Intermediate',
-        'TT': 'Later sleep preference',
-    },
-    'rs2292912': {  # PER1
-        'gene': 'PER1', 'trait': 'Sleep timing',
+    'rs2292912': {  # CRY2
+        'gene': 'CRY2', 'trait': 'Sleep timing',
         'effect': 'Morning/evening chronotype',
         'CC': 'Morning person',
         'CT': 'Intermediate',
@@ -1144,18 +1137,18 @@ TRAITS_VITAMINS = {
         'TT': 'Higher levels',
     },
     'rs601338': {  # FUT2
-        'gene': 'FUT2', 'trait': 'B12 absorption',
+        'gene': 'FUT2', 'trait': 'B12 levels',
         'evidence': 'Secretor status',
-        'AA': 'Better absorption',
-        'AG': 'Normal',
-        'GG': 'Lower absorption (non-secretor)',
+        'AA': 'Non-secretor (higher plasma B12 levels)',
+        'AG': 'Intermediate',
+        'GG': 'Secretor (lower plasma B12 levels)',
     },
     'rs4654748': {  # NBPF3
-        'gene': 'NBPF3', 'trait': 'Vitamin B12',
-        'evidence': 'B12 levels',
-        'CC': 'Lower levels',
-        'CT': 'Moderate',
-        'TT': 'Higher levels',
+        'gene': 'NBPF3', 'trait': 'Vitamin B6',
+        'evidence': 'B6 blood concentration',
+        'CC': 'Lower B6 levels (-1.45 to -2.90 ng/mL)',
+        'CT': 'Moderate B6 levels',
+        'TT': 'Higher B6 levels',
     },
 }
 
@@ -1167,13 +1160,6 @@ TRAITS_ATHLETIC = {
         'CT': 'RX - Mixed performance',
         'TT': 'XX - Endurance athlete advantage',
     },
-    'rs4994': {  # ACE I/D
-        'gene': 'ACE', 'trait': 'Endurance vs power',
-        'evidence': 'Insertion/deletion polymorphism',
-        'II': 'Endurance advantage (I/I)',
-        'ID': 'Mixed (I/D)',
-        'DD': 'Power/strength advantage (D/D)',
-    },
     'rs8192678': {  # PPARGC1A
         'gene': 'PPARGC1A', 'trait': 'Aerobic capacity, V̇O2max',
         'evidence': 'PGC-1α - mitochondrial biogenesis',
@@ -1181,8 +1167,8 @@ TRAITS_ATHLETIC = {
         'CT': 'Intermediate',
         'TT': 'Lower V̇O2max response to training',
     },
-    'rs1572312': {  # HIF1A
-        'gene': 'HIF1A', 'trait': 'Altitude adaptation, endurance',
+    'rs1572312': {  # NFIA-AS2
+        'gene': 'NFIA-AS2', 'trait': 'Altitude adaptation, endurance',
         'evidence': 'Hypoxia response',
         'GG': 'Better altitude adaptation',
         'GA': 'Intermediate',
@@ -1364,6 +1350,31 @@ def predict_y_haplogroup(snps_obj):
 # ANALYSIS ENGINE
 # ============================================================================
 
+def get_genotype_interpretation(genotype, data):
+    """Get interpretation handling reversed order and strand orientation"""
+    # Direct match
+    if genotype in data:
+        return data[genotype]
+
+    # Try reversed (TC -> CT)
+    reversed_gt = genotype[::-1]
+    if reversed_gt in data:
+        return data[reversed_gt]
+
+    # Try complement strand
+    complement_map = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
+    complement = ''.join([complement_map.get(a, a) for a in genotype])
+    if complement in data:
+        return data[complement]
+
+    # Try reversed complement
+    reversed_complement = complement[::-1]
+    if reversed_complement in data:
+        return data[reversed_complement]
+
+    return f"Unknown genotype: {genotype}"
+
+
 def analyze_category(snps_obj, markers, category_name):
     """Generic analyzer for any marker category"""
     results = []
@@ -1372,7 +1383,7 @@ def analyze_category(snps_obj, markers, category_name):
         if len(snp_data) > 0 and not snp_data['genotype'].isna().all():
             genotype = str(snp_data['genotype'].iloc[0])
             gene = data.get('gene', '')
-            interpretation = data.get(genotype, f"Unknown genotype: {genotype}")
+            interpretation = get_genotype_interpretation(genotype, data)
 
             result = {
                 'rsid': rsid,
