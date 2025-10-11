@@ -105,9 +105,9 @@ TIER1_PHARMACOGENOMICS = {
     'rs1045642': {  # ABCB1 C3435T
         'gene': 'ABCB1', 'drug': 'Many drugs (P-glycoprotein)',
         'evidence': 'Affects drug transport',
-        'CC': 'Higher P-gp activity - lower drug levels',
-        'CT': 'Moderate',
-        'TT': 'Lower P-gp - higher drug levels',
+        'CC': 'Normal drug metabolism, cannabis dependence risk, lower cancer risk',
+        'CT': 'Slower metaboliser for some drugs',
+        'TT': 'Altered drug metabolism/bioavailability, moderately increased cancer risk',
     },
     'rs1142345': {  # TPMT*3C
         'gene': 'TPMT', 'drug': 'Azathioprine, 6-mercaptopurine (immunosuppressants)',
@@ -298,9 +298,9 @@ HEALTH_CANCER = {
     'rs1042522': {  # TP53
         'gene': 'TP53', 'condition': 'Tumor suppressor (Arg72Pro)',
         'evidence': 'Functional variant',
-        'GG': 'Arg/Arg (better DNA repair)',
-        'CG': 'Arg/Pro (heterozygous)',
-        'CC': 'Pro/Pro (better apoptosis)',
+        'GG': 'Arg/Arg - common variant, slightly shorter lifespan',
+        'CG': 'Arg/Pro - intermediate',
+        'CC': 'Pro/Pro - may live ~3 years longer, better chemo response',
     },
     'rs17849079': {  # PIK3CA
         'gene': 'PIK3CA', 'condition': 'Cowden syndrome',
@@ -460,16 +460,16 @@ HEALTH_COGNITIVE = {
     'rs17070145': {  # KIBRA
         'gene': 'KIBRA', 'condition': 'Memory performance',
         'evidence': 'Episodic memory association',
-        'CC': 'Better memory performance',
-        'CT': 'Intermediate',
-        'TT': 'Typical memory',
+        'CC': 'Reduced memory abilities',
+        'CT': 'Increased memory performance (T allele +24% recall)',
+        'TT': 'Greatly increased memory performance',
     },
     'rs363050': {  # SNAP25
         'gene': 'SNAP25', 'condition': 'Intelligence, IQ',
-        'evidence': 'IQ association studies',
-        'AA': 'Typical',
-        'AG': 'Moderate',
-        'GG': 'Higher IQ association',
+        'evidence': 'Original findings failed to replicate',
+        'AA': 'Original (unreplicated) study suggested +2.8 PIQ vs GG',
+        'AG': 'Intermediate (unreplicated findings)',
+        'GG': 'Reference genotype (note: original IQ findings did not replicate)',
     },
     'rs6265_cognition': {  # BDNF
         'gene': 'BDNF', 'condition': 'Learning, memory',
@@ -625,9 +625,9 @@ MOOD_DOPAMINE = {
     'rs165599': {  # COMT region
         'gene': 'COMT', 'system': 'Dopamine',
         'effect': 'Bipolar, schizophrenia',
-        'GG': 'Lower risk',
-        'GA': 'Moderate',
-        'AA': 'Elevated risk',
+        'GG': 'Elevated risk (magnitude 1.5)',
+        'GA': 'Moderate risk (magnitude 1)',
+        'AA': 'Lower risk (magnitude 0)',
     },
     'rs1800497': {  # ANKK1/DRD2 (Taq1A)
         'gene': 'DRD2', 'system': 'Dopamine D2 receptor',
@@ -673,10 +673,10 @@ MOOD_DOPAMINE = {
     },
     'rs1108580': {  # DBH
         'gene': 'DBH', 'system': 'Dopamine beta-hydroxylase',
-        'effect': 'ADHD, norepinephrine levels',
-        'GG': 'Lower activity',
-        'GA': 'Intermediate',
-        'AA': 'Higher activity',
+        'effect': 'ADHD, Parkinson, cocaine dependence associations',
+        'GG': 'Variant genotype (non-pathogenic)',
+        'GA': 'Heterozygous',
+        'AA': 'Reference/common genotype',
     },
 }
 
@@ -691,9 +691,9 @@ MOOD_NEUROPLASTICITY = {
     'rs11030104': {  # BDNF
         'gene': 'BDNF', 'system': 'Neuroplasticity',
         'effect': 'BMI, Alzheimer disease, bipolar disorder',
-        'AA': 'Typical',
-        'AG': 'Moderate',
-        'GG': 'Altered response',
+        'AA': 'Higher BMI tendency (A is risk allele)',
+        'AG': 'Moderate BMI increase, may affect Alzheimer (non-ApoE4)',
+        'GG': 'Lower BMI tendency',
     },
     'rs908867': {  # BDNF
         'gene': 'BDNF', 'system': 'BDNF expression',
@@ -967,18 +967,18 @@ TRAITS_BODY = {
         'GG': 'Typical',
     },
     'rs1042713': {  # ADRB2
-        'gene': 'ADRB2', 'trait': 'Weight loss response to exercise',
+        'gene': 'ADRB2', 'trait': 'Asthma/inhaler response',
         'evidence': 'Beta-2 adrenergic receptor',
-        'AA': 'Better weight loss with exercise',
-        'AG': 'Intermediate',
-        'GG': 'Less response to exercise',
+        'AA': 'Arg/Arg - 1.7x risk that pediatric inhaler use may worsen asthma',
+        'AG': 'Gly/Arg - 1.3x risk that pediatric inhaler use may worsen asthma',
+        'GG': 'Gly/Gly - normal (reference)',
     },
     'rs1042714': {  # ADRB2
-        'gene': 'ADRB2', 'trait': 'Exercise response',
-        'evidence': 'Adrenergic receptor',
-        'CC': 'Better response',
-        'CG': 'Intermediate',
-        'GG': 'Reduced response',
+        'gene': 'ADRB2', 'trait': 'Multiple health associations (Q27E)',
+        'evidence': 'Beta-2 adrenergic receptor',
+        'CC': 'Gln/Gln - normal/baseline risk',
+        'CG': 'Gln/Glu - complex (increased thromboembolism, autism risk)',
+        'GG': 'Glu/Glu - complex (higher thromboembolism, autism, stroke; lower diabetes risk)',
     },
     'rs6570507': {  # ADGRG6
         'gene': 'ADGRG6', 'trait': 'Height',
@@ -1094,9 +1094,9 @@ TRAITS_SLEEP_CIRCADIAN = {
     'rs1801260': {  # CLOCK
         'gene': 'CLOCK', 'trait': 'Circadian rhythm',
         'evidence': 'Clock gene',
-        'CC': 'Normal sleep',
-        'CT': 'Evening preference',
-        'TT': 'Strong evening preference',
+        'CC': 'Strong evening preference (delayed sleep ~79min, less sleep ~75min)',
+        'CT': 'Moderate evening preference',
+        'TT': 'Normal/typical sleep pattern',
     },
     'rs73598374': {  # ADA
         'gene': 'ADA', 'trait': 'Deep sleep',
@@ -1161,11 +1161,11 @@ TRAITS_ATHLETIC = {
         'TT': 'Lower V̇O2max response to training',
     },
     'rs1572312': {  # NFIA-AS2
-        'gene': 'NFIA-AS2', 'trait': 'Altitude adaptation, endurance',
-        'evidence': 'Hypoxia response',
-        'GG': 'Better altitude adaptation',
-        'GA': 'Intermediate',
-        'AA': 'Typical altitude response',
+        'gene': 'NFIA-AS2', 'trait': 'Sports genomics marker',
+        'evidence': 'Limited research (alleles: A/C)',
+        'CC': 'Common genotype',
+        'CA': 'Heterozygous',
+        'AA': 'Alternative genotype',
     },
     'rs699': {  # AGT
         'gene': 'AGT', 'trait': 'Blood pressure response to exercise',
@@ -1192,11 +1192,11 @@ TRAITS_SKIN_AGING = {
         'TT': 'Strongest collagen, better bone density',
     },
     'rs1126809': {  # TYR
-        'gene': 'TYR', 'trait': 'Skin pigmentation response',
-        'evidence': 'Tyrosinase, photoaging',
-        'GG': 'Lighter skin, higher photoaging risk',
-        'GA': 'Moderate',
-        'AA': 'Darker skin, sun protection',
+        'gene': 'TYR', 'trait': 'Skin pigmentation, melanoma risk',
+        'evidence': 'Tyrosinase (R402Q)',
+        'GG': 'Arg/Arg - normal melanoma risk',
+        'GA': 'Arg/Gln - slight increase in skin cancer risk',
+        'AA': 'Gln/Gln - slight increase in skin cancer risk',
     },
 }
 
