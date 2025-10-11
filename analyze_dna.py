@@ -286,11 +286,11 @@ HEALTH_CARDIOVASCULAR_EXTENDED = {
         'CC': 'Higher IL-6, inflammation',
     },
     'rs4420638': {  # APOE region
-        'gene': 'APOE', 'condition': 'Coronary artery disease',
-        'evidence': 'GWAS validated',
-        'GG': 'Lower risk',
-        'AG': 'Moderate',
-        'AA': 'Elevated CAD risk',
+        'gene': 'APOE', 'condition': 'Alzheimer\'s disease, CAD',
+        'evidence': 'APOE region proxy marker',
+        'GG': 'Higher Alzheimer risk (2x+, magnitude 3), higher LDL cholesterol',
+        'AG': 'Elevated Alzheimer risk (~3x, magnitude 2), higher heart disease risk (1.4x)',
+        'AA': 'Normal/average Alzheimer risk (magnitude 0)',
     },
 }
 
@@ -489,11 +489,11 @@ HEALTH_PAIN = {
         'AA': 'Lower pain sensitivity',
     },
     'rs6267': {  # COMT
-        'gene': 'COMT', 'condition': 'Pain sensitivity',
-        'evidence': 'Pain threshold studies',
-        'GG': 'Lower pain sensitivity',
-        'GT': 'Moderate',
-        'TT': 'Higher pain sensitivity',
+        'gene': 'COMT', 'condition': 'Schizophrenia associations (research mixed/inconclusive)',
+        'evidence': 'COMT variant - some studies suggest schizophrenia association, others find no link',
+        'GG': 'Common genotype (~83% frequency, research on schizophrenia association is inconclusive)',
+        'GT': 'Less common (~16%, TT genotype codes for similar enzyme activity as GT)',
+        'TT': 'Rare genotype (~1%, research on schizophrenia association is inconclusive)',
     },
     'rs1799971_pain': {  # OPRM1
         'gene': 'OPRM1', 'condition': 'Pain, opioid response',
@@ -617,10 +617,10 @@ MOOD_DOPAMINE = {
     },
     'rs4633': {  # COMT
         'gene': 'COMT', 'system': 'Dopamine',
-        'effect': 'Endometrial cancer risk',
-        'CC': 'Lower activity',
-        'CT': 'Intermediate',
-        'TT': 'Higher COMT activity',
+        'effect': 'Endometrial cancer risk (affects COMT expression)',
+        'CC': 'Normal cancer risk (magnitude 0)',
+        'CT': 'Higher endometrial cancer risk (magnitude 2)',
+        'TT': 'Higher endometrial cancer risk (magnitude 2, OR 2.39)',
     },
     'rs165599': {  # COMT region
         'gene': 'COMT', 'system': 'Dopamine',
@@ -639,9 +639,9 @@ MOOD_DOPAMINE = {
     'rs6277': {  # DRD2
         'gene': 'DRD2', 'system': 'Dopamine D2 receptor',
         'effect': 'Schizophrenia, addiction',
-        'CC': 'Higher D2 expression',
-        'CT': 'Intermediate',
-        'TT': 'Lower D2 expression',
+        'CC': 'Higher D2 expression, 1.6x schizophrenia risk',
+        'CT': 'Intermediate D2 expression, 1.4x schizophrenia risk',
+        'TT': 'Lower D2 expression (T allele decreases mRNA), normal schizophrenia risk',
     },
     'rs1076560': {  # DRD2
         'gene': 'DRD2', 'system': 'Dopamine D2',
@@ -741,10 +741,10 @@ MOOD_BIPOLAR_SCHIZOPHRENIA = {
     # rs7430407 removed - doesn't exist in SNPedia
     'rs3924999': {  # NRG1
         'gene': 'NRG1', 'system': 'Neuregulin 1',
-        'effect': 'Schizophrenia',
-        'GG': 'Typical risk',
-        'AG': 'Moderate risk',
-        'AA': 'Elevated risk (affects prepulse inhibition)',
+        'effect': 'Schizophrenia association (research inconclusive, magnitude 0)',
+        'GG': 'Research on schizophrenia risk is mixed/inconclusive',
+        'AG': 'Research on schizophrenia risk is mixed/inconclusive',
+        'AA': 'Research on schizophrenia risk is mixed/inconclusive',
     },
     'rs17512836': {  # TCF4
         'gene': 'TCF4', 'system': 'Transcription factor',
@@ -1116,11 +1116,11 @@ TRAITS_SLEEP_CIRCADIAN = {
 
 TRAITS_VITAMINS = {
     'rs4588': {  # GC
-        'gene': 'GC', 'trait': 'Vitamin D binding',
-        'evidence': 'Vitamin D levels',
-        'CC': 'Lower tendency',
-        'CA': 'Moderate',
-        'AA': 'Higher tendency',
+        'gene': 'GC', 'trait': 'Vitamin D levels',
+        'evidence': 'Vitamin D binding protein - affects 25(OH)D levels',
+        'CC': 'Higher vitamin D levels (C allele associated with ~10-15% higher 25(OH)D)',
+        'CA': 'Intermediate vitamin D levels',
+        'AA': 'Lower vitamin D levels (A allele associated with ~10-15% lower 25(OH)D)',
     },
     'rs2282679': {  # GC
         'gene': 'GC', 'trait': 'Vitamin D',
