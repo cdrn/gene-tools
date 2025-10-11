@@ -492,8 +492,8 @@ HEALTH_PAIN = {
         'gene': 'COMT', 'condition': 'Pain sensitivity',
         'evidence': 'Pain threshold studies',
         'GG': 'Lower pain sensitivity',
-        'GA': 'Moderate',
-        'AA': 'Higher pain sensitivity',
+        'GT': 'Moderate',
+        'TT': 'Higher pain sensitivity',
     },
     'rs1799971_pain': {  # OPRM1
         'gene': 'OPRM1', 'condition': 'Pain, opioid response',
@@ -515,9 +515,9 @@ HEALTH_ADDICTION = {
     'rs279858': {  # GABRA2
         'gene': 'GABRA2', 'condition': 'Alcohol dependence',
         'evidence': 'Alcoholism association',
-        'GG': 'Typical risk',
-        'GA': 'Elevated alcoholism risk',
-        'AA': 'Higher alcoholism risk',
+        'AA': 'Lower alcoholism risk',
+        'AG': 'Elevated risk (slower alcohol response)',
+        'GG': 'Higher alcoholism risk (slower alcohol response)',
     },
     'rs2023239': {  # CNR1
         'gene': 'CNR1', 'condition': 'Cannabis dependence',
@@ -645,10 +645,10 @@ MOOD_DOPAMINE = {
     },
     'rs1076560': {  # DRD2
         'gene': 'DRD2', 'system': 'Dopamine D2',
-        'effect': 'Schizophrenia, cognition',
-        'GG': 'Typical',
-        'GT': 'Moderate',
-        'TT': 'Altered function',
+        'effect': 'Working memory, alcoholism risk',
+        'CC': 'Typical',
+        'AC': 'Moderate (1.3x alcoholism risk)',
+        'AA': 'Altered working memory',
     },
     'rs1800955': {  # DRD4
         'gene': 'DRD4', 'system': 'Dopamine D4 receptor',
@@ -765,10 +765,10 @@ MOOD_ANXIETY_STRESS = {
     },
     'rs53576': {  # OXTR
         'gene': 'OXTR', 'system': 'Oxytocin receptor',
-        'effect': 'Social bonding, empathy, autism',
-        'GG': 'Higher sensitivity (more empathetic)',
+        'effect': 'Social bonding, empathy, stress response',
+        'GG': 'Higher sensitivity (more empathetic, handle stress well)',
         'GA': 'Intermediate',
-        'AA': 'Lower sensitivity (less empathetic, autism risk)',
+        'AA': 'Lower sensitivity (less empathetic, higher stress)',
     },
     'rs2254298': {  # OXTR
         'gene': 'OXTR', 'system': 'Oxytocin receptor',
@@ -786,10 +786,10 @@ MOOD_ANXIETY_STRESS = {
     },
     'rs2268498': {  # OXTR
         'gene': 'OXTR', 'system': 'Oxytocin',
-        'effect': 'Empathy, autism',
-        'CC': 'Typical',
-        'CT': 'Moderate',
-        'TT': 'Reduced empathy',
+        'effect': 'Social perception, facial emotion recognition',
+        'CC': 'Common variant',
+        'CT': 'Heterozygous',
+        'TT': 'Homozygous variant (may affect social perception)',
     },
     'rs13212041': {  # HTR1B
         'gene': 'HTR1B', 'system': 'Serotonin receptor 1B',
@@ -800,10 +800,10 @@ MOOD_ANXIETY_STRESS = {
     },
     'rs3813034': {  # SLC6A4
         'gene': 'SLC6A4', 'system': 'Serotonin transporter',
-        'effect': 'Aggression, substance abuse',
-        'CC': 'Typical',
-        'CT': 'Moderate',
-        'TT': 'Altered receptor function',
+        'effect': 'Behavior, bipolar, depression associations',
+        'CC': 'Probable non-pathogenic',
+        'CA': 'Heterozygous',
+        'AA': 'Less common variant',
     },
     'rs1799971': {  # OPRM1
         'gene': 'OPRM1', 'system': 'Opioid receptor',
@@ -815,19 +815,12 @@ MOOD_ANXIETY_STRESS = {
 }
 
 MOOD_OTHER = {
-    'rs2230739': {  # ADCY9
-        'gene': 'ADCY9', 'system': 'Adenylyl cyclase',
-        'effect': 'Depression, antidepressant response',
-        'CC': 'Better response',
-        'CT': 'Moderate',
-        'TT': 'Poorer antidepressant response',
-    },
     'rs12922317': {  # SNX29
         'gene': 'SNX29', 'system': 'Sorting nexin',
-        'effect': 'Depression',
-        'GG': 'Lower risk',
-        'GA': 'Moderate',
-        'AA': 'Higher depression risk',
+        'effect': 'Possible schizophrenia association',
+        'GG': 'Common genotype',
+        'GA': 'Heterozygous',
+        'AA': 'Less common genotype (limited research)',
     },
     'rs4675690': {  # CREB1
         'gene': 'CREB1', 'system': 'cAMP response element-binding protein',
@@ -838,10 +831,10 @@ MOOD_OTHER = {
     },
     'rs2049045': {  # BDNF
         'gene': 'BDNF', 'system': 'Brain-derived neurotrophic factor',
-        'effect': 'Depression (via neurotransmitter synthesis)',
-        'AA': 'Normal',
-        'AG': 'Moderate',
-        'GG': 'Depression risk (low folate pathway)',
+        'effect': 'Alzheimer risk, bipolar disorder',
+        'CC': 'Common genotype',
+        'CG': 'Heterozygous',
+        'GG': 'Less common (limited research)',
     },
     'rs1801131_mood': {  # MTHFR A1298C
         'gene': 'MTHFR', 'system': 'Folate/neurotransmitters',
@@ -868,9 +861,9 @@ TRAITS_APPEARANCE = {
     'rs1800407': {  # OCA2
         'gene': 'OCA2', 'trait': 'Eye color',
         'evidence': 'Modifier',
-        'CC': 'Darker eyes',
-        'CT': 'Mixed',
-        'TT': 'Lighter eyes',
+        'GG': 'Lighter eyes (blue/gray)',
+        'AG': 'Mixed (hazel/green)',
+        'AA': 'Darker eyes (brown/black)',
     },
     'rs16891982': {  # SLC45A2
         'gene': 'SLC45A2', 'trait': 'Eye/skin pigmentation',
@@ -882,9 +875,9 @@ TRAITS_APPEARANCE = {
     'rs1393350': {  # TYR
         'gene': 'TYR', 'trait': 'Eye color',
         'evidence': 'Tyrosinase',
-        'AA': 'Darker eyes',
-        'AG': 'Mixed',
-        'GG': 'Lighter eyes',
+        'AA': 'Lighter eyes (blue), blond hair',
+        'AG': 'Lighter eyes tendency',
+        'GG': 'Darker eyes (brown)',
     },
     'rs12896399': {  # SLC24A4
         'gene': 'SLC24A4', 'trait': 'Hair color',
@@ -945,9 +938,9 @@ TRAITS_APPEARANCE = {
     'rs1426654': {  # SLC24A5
         'gene': 'SLC24A5', 'trait': 'Skin color',
         'evidence': 'Major determinant',
-        'AA': 'Darker skin',
-        'AG': 'Mixed',
-        'GG': 'Lighter skin',
+        'AA': 'Lighter skin (European ancestry)',
+        'AG': 'Intermediate',
+        'GG': 'Darker skin (African/Asian ancestry)',
     },
     'rs12203592': {  # IRF4
         'gene': 'IRF4', 'trait': 'Freckles',
