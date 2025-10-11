@@ -149,17 +149,17 @@ TIER1_PHARMACOGENOMICS = {
 TIER1_CARDIOVASCULAR = {
     'rs429358': {  # APOE ε4
         'gene': 'APOE', 'condition': 'Alzheimer disease',
-        'evidence': 'OR 3-12x depending on copies',
-        'TT': 'Normal/lowest risk (no ε4)',
-        'CT': 'APOE ε3/ε4 - elevated risk (~3x)',
-        'CC': 'APOE ε4/ε4 - very high risk (~12x)',
+        'evidence': 'See "Longevity & Cognitive Aging" section for full personalized APOE interpretation',
+        'TT': 'No ε4 allele - see combined interpretation with rs7412 below',
+        'CT': 'ONE ε4 allele - see combined interpretation with rs7412 below',
+        'CC': 'TWO ε4 copies (ε4/ε4) - very high risk - see full interpretation below',
     },
     'rs7412': {  # APOE ε2
         'gene': 'APOE', 'condition': 'Alzheimer disease',
-        'evidence': 'Well-established (interpret with rs429358)',
-        'CC': 'T allele absent (check rs429358: if CC=ε4/ε4, if CT=ε3/ε4, if TT=ε3/ε3)',
-        'CT': 'One T allele (check rs429358: if TT=ε2/ε3)',
-        'TT': 'Two T alleles (check rs429358: if TT=ε2/ε2 protective)',
+        'evidence': 'See "Longevity & Cognitive Aging" section for full personalized APOE interpretation',
+        'CC': 'No ε2 allele - see combined interpretation with rs429358 below',
+        'CT': 'ONE ε2 allele - see combined interpretation with rs429358 below',
+        'TT': 'TWO ε2 alleles - see combined interpretation with rs429358 below',
     },
     'rs1333049': {  # 9p21
         'gene': 'CDKN2A/B', 'condition': 'Coronary artery disease',
@@ -285,13 +285,7 @@ HEALTH_CARDIOVASCULAR_EXTENDED = {
         'GC': 'Moderate',
         'CC': 'Higher IL-6, inflammation',
     },
-    'rs4420638': {  # APOE region
-        'gene': 'APOE', 'condition': 'Alzheimer\'s disease, CAD',
-        'evidence': 'APOE region proxy marker',
-        'GG': 'Higher Alzheimer risk (2x+, magnitude 3), higher LDL cholesterol',
-        'AG': 'Elevated Alzheimer risk (~3x, magnitude 2), higher heart disease risk (1.4x)',
-        'AA': 'Normal/average Alzheimer risk (magnitude 0)',
-    },
+    # Note: rs4420638 (APOE region) moved to LONGEVITY_COGNITIVE_AGING section for consolidated interpretation
 }
 
 HEALTH_CANCER = {
@@ -411,52 +405,253 @@ HEALTH_BONE_KIDNEY = {
     },
 }
 
-HEALTH_LONGEVITY = {
+# ============================================================================
+# LONGEVITY & COGNITIVE AGING - FOXO3 + APOE
+# Most replicated longevity genes - interpret together
+# ============================================================================
+
+LONGEVITY_COGNITIVE_AGING = {
+    # FOXO3 - The Longevity Gene (most replicated across all populations)
     'rs2802292': {  # FOXO3
         'gene': 'FOXO3', 'condition': 'Longevity, healthy aging',
-        'evidence': 'Multiple longevity studies, centenarian association',
+        'evidence': 'Most replicated longevity gene worldwide - centenarian association across all populations',
+        'TT': '🌟 STRONG longevity (~1.8x centenarian odds) - stress resistance, healthy aging',
+        'GT': '✓ MODERATE longevity (~1.3x centenarian odds) - good aging trajectory',
         'GG': 'Typical lifespan',
-        'GT': 'Increased longevity odds (~1.3x)',
-        'TT': 'Higher longevity association (~1.8x)',
     },
     'rs2764264': {  # FOXO3
-        'gene': 'FOXO3', 'condition': 'Longevity',
-        'evidence': 'Centenarian studies',
-        'CC': 'Typical',
-        'CT': 'Longevity association',
-        'TT': 'Strong longevity association',
+        'gene': 'FOXO3', 'condition': 'Longevity (male-specific effect)',
+        'evidence': 'Centenarian studies - stronger effect in males',
+        'TT': '🌟 STRONG longevity association',
+        'CT': '✓ MODERATE longevity association',
+        'CC': 'Typical lifespan',
     },
+
+    # APOE - Alzheimer's & Cognitive Aging (interpret rs429358 + rs7412 together!)
+    'rs429358': {  # APOE ε4 - THE CRITICAL ONE
+        'gene': 'APOE', 'condition': 'Alzheimer disease, cognitive aging, lifespan',
+        'evidence': 'Must combine with rs7412 to determine APOE type - see personalized interpretation below',
+        'TT': 'No ε4 allele (need rs7412: if TT=ε2/ε2 [0.6x risk], if CT=ε2/ε3 [0.6x risk], if CC=ε3/ε3 [1.0x risk])',
+        'CT': 'ONE ε4 allele (need rs7412: if CT=ε2/ε4 [~2.6x risk], if CC=ε3/ε4 [~3.2x risk])',
+        'CC': '⚠⚠ TWO ε4 copies = ε4/ε4 - very high Alzheimer risk (~12x, 61x early-onset), very rare (~2%)',
+    },
+    'rs7412': {  # APOE ε2 - THE PROTECTIVE ONE
+        'gene': 'APOE', 'condition': 'Alzheimer protection, longevity',
+        'evidence': 'Must combine with rs429358 to determine APOE type - see personalized interpretation below',
+        'TT': 'TWO ε2 alleles (need rs429358: if TT=ε2/ε2 [0.6x risk, longevity])',
+        'CT': 'ONE ε2 allele (need rs429358: if TT=ε2/ε3 [0.6x risk], if CT=ε2/ε4 [~2.6x risk])',
+        'CC': 'No ε2 allele (need rs429358: if TT=ε3/ε3 [1.0x risk], if CT=ε3/ε4 [~3.2x risk], if CC=ε4/ε4 [~12x risk])',
+    },
+
+    # APOE region proxy marker
+    'rs4420638': {  # APOE region
+        'gene': 'APOE region', 'condition': 'Alzheimer risk (additional marker), cholesterol',
+        'evidence': 'APOE region proxy - correlates with ε4 status',
+        'GG': '⚠ Higher Alzheimer risk (2x+), higher LDL cholesterol',
+        'AG': '⚠ Elevated Alzheimer risk (~3x), higher heart disease risk (1.4x)',
+        'AA': '✓ Normal/average Alzheimer risk',
+    },
+
+    # Other longevity markers
     'rs3764261': {  # CETP
         'gene': 'CETP', 'condition': 'HDL cholesterol, longevity',
         'evidence': 'Higher HDL, longevity association',
+        'GG': '✓ Lower CETP activity - higher HDL ("good" cholesterol), longevity association',
+        'AG': 'Reduced CETP activity - higher HDL',
         'AA': 'Typical CETP activity',
-        'AG': 'Reduced activity - higher HDL',
-        'GG': 'Lower activity - higher HDL, longevity',
-    },
-    'rs7412_longevity': {  # APOE ε2
-        'gene': 'APOE', 'condition': 'Longevity',
-        'evidence': 'ε2 allele enriched in centenarians',
-        'CC': 'ε4 allele (shorter lifespan tendency)',
-        'CT': 'ε2 or ε3',
-        'TT': 'ε2/ε2 (longevity, protective)',
     },
     'rs9536314': {  # KLOTHO
-        'gene': 'KLOTHO', 'condition': 'Aging, cognition',
-        'evidence': 'Anti-aging gene',
+        'gene': 'KLOTHO', 'condition': 'Anti-aging, cognition',
+        'evidence': 'Anti-aging gene - klotho protein',
+        'GA': '✓ KL-VS heterozygote - better cognition, may enhance longevity',
         'GG': 'Typical',
-        'GA': 'KL-VS heterozygote - better cognition',
-        'AA': 'Homozygote - reduced lifespan',
+        'AA': 'KL-VS homozygote - may reduce lifespan (rare)',
     },
 }
 
+# ============================================================================
+# PERSONALIZED FOXO3 + APOE INTERPRETATION
+# ============================================================================
+
+def interpret_apoe_foxo3(snps_obj):
+    """
+    Interpret user's specific APOE and FOXO3 genotypes with personalized recommendations
+    """
+    # Get APOE genotypes
+    rs429358_data = snps_obj.snps[snps_obj.snps.index == 'rs429358']
+    rs7412_data = snps_obj.snps[snps_obj.snps.index == 'rs7412']
+
+    rs429358_gt = None
+    rs7412_gt = None
+
+    if len(rs429358_data) > 0 and not rs429358_data['genotype'].isna().all():
+        rs429358_gt = str(rs429358_data['genotype'].iloc[0])
+    if len(rs7412_data) > 0 and not rs7412_data['genotype'].isna().all():
+        rs7412_gt = str(rs7412_data['genotype'].iloc[0])
+
+    # Get FOXO3 genotypes
+    rs2802292_data = snps_obj.snps[snps_obj.snps.index == 'rs2802292']
+    rs2764264_data = snps_obj.snps[snps_obj.snps.index == 'rs2764264']
+
+    rs2802292_gt = None
+    rs2764264_gt = None
+
+    if len(rs2802292_data) > 0 and not rs2802292_data['genotype'].isna().all():
+        rs2802292_gt = str(rs2802292_data['genotype'].iloc[0])
+    if len(rs2764264_data) > 0 and not rs2764264_data['genotype'].isna().all():
+        rs2764264_gt = str(rs2764264_data['genotype'].iloc[0])
+
+    # Determine APOE type
+    apoe_type = None
+    apoe_risk = None
+    apoe_description = None
+    apoe_recommendations = []
+
+    if rs429358_gt and rs7412_gt:
+        # Normalize genotypes (handle reversed)
+        if rs429358_gt == 'TC': rs429358_gt = 'CT'
+        if rs7412_gt == 'TC': rs7412_gt = 'CT'
+
+        # Map to APOE type
+        apoe_map = {
+            ('TT', 'TT'): ('ε2/ε2', '0.6x', '🌟 PROTECTIVE', 'Very rare (~1%). Strong Alzheimer protection and enriched in centenarians. However, can cause type III hyperlipoproteinemia - monitor triglycerides.'),
+            ('TT', 'CT'): ('ε2/ε3', '0.6x', '✓ PROTECTIVE', 'Protective variant (~10-15% of population). Lower Alzheimer risk than average.'),
+            ('CT', 'CT'): ('ε2/ε4', '~2.6x', '⚠ INTERMEDIATE', 'Rare combination (~2%). You have both the protective ε2 and risk ε4 alleles. The ε2 partially offsets ε4 risk, resulting in intermediate Alzheimer risk.'),
+            ('TT', 'CC'): ('ε3/ε3', '1.0x', '✓ BASELINE', 'Most common type (~60-70% of population). Normal/average Alzheimer risk.'),
+            ('CT', 'CC'): ('ε3/ε4', '~3.2x', '⚠ ELEVATED', 'Common variant (~25% of population). 3x higher Alzheimer risk, 1.4x heart disease risk. Focus on prevention!'),
+            ('CC', 'CC'): ('ε4/ε4', '~12x', '⚠⚠ HIGH', 'Very rare (~2%). Highest Alzheimer risk (12x late-onset, 61x early-onset). Strong prevention strategy recommended.'),
+        }
+
+        key = (rs429358_gt, rs7412_gt)
+        if key in apoe_map:
+            apoe_type, apoe_risk, apoe_icon, apoe_description = apoe_map[key]
+
+            # Recommendations based on APOE type
+            if 'ε4' in apoe_type:
+                apoe_recommendations = [
+                    "🏃 Exercise regularly (150+ min/week aerobic + strength training)",
+                    "🥗 Mediterranean diet (high fish, olive oil, vegetables, low red meat)",
+                    "💤 Prioritize sleep (7-9 hours, treat sleep apnea if present)",
+                    "🧠 Cognitive training and lifelong learning",
+                    "❤️ Control cardiovascular risk factors (BP, cholesterol, diabetes)",
+                    "🚭 Avoid smoking and excessive alcohol",
+                    "👥 Stay socially engaged",
+                ]
+                if apoe_type == 'ε4/ε4':
+                    apoe_recommendations.insert(0, "⚠️ Consider genetic counseling and early/frequent cognitive screening")
+            elif 'ε2' in apoe_type:
+                apoe_recommendations = [
+                    "🌟 You have genetic protection against Alzheimer's!",
+                    "📊 Monitor triglycerides (ε2 can rarely cause elevated levels)",
+                    "💪 Continue healthy lifestyle to maximize longevity benefits",
+                ]
+            else:  # ε3/ε3
+                apoe_recommendations = [
+                    "✓ Average Alzheimer risk - standard prevention applies",
+                    "🏃 Regular exercise and healthy diet still beneficial",
+                    "🧠 Cognitive engagement supports healthy aging",
+                ]
+
+    # Interpret FOXO3
+    foxo3_longevity = None
+    foxo3_description = None
+
+    if rs2802292_gt:
+        if rs2802292_gt in ['TT']:
+            foxo3_longevity = '🌟 STRONG'
+            foxo3_description = 'EXCELLENT longevity genetics! ~1.8x odds of reaching 100. Associated with stress resistance and healthy aging.'
+        elif rs2802292_gt in ['GT', 'TG']:
+            foxo3_longevity = '✓ MODERATE'
+            foxo3_description = 'Good longevity genetics. ~1.3x odds of reaching 100. Favorable aging trajectory.'
+        else:  # GG
+            foxo3_longevity = 'TYPICAL'
+            foxo3_description = 'Average longevity - lifestyle factors still matter greatly!'
+
+    # Only print if we have SOMETHING to show
+    if not (foxo3_longevity or apoe_type or rs429358_gt or rs7412_gt):
+        return  # No data available, skip this section
+
+    # Print interpretation
+    print(f"\n{Colors.BOLD}{Colors.CYAN}{'='*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.CYAN}  YOUR PERSONALIZED LONGEVITY & COGNITIVE AGING PROFILE{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.CYAN}{'='*80}{Colors.END}\n")
+
+    # FOXO3 Section
+    if foxo3_longevity:
+        print(f"{Colors.BOLD}🧬 FOXO3 Longevity Gene (rs2802292: {rs2802292_gt}):{Colors.END}")
+        print(f"  {foxo3_description}\n")
+    else:
+        print(f"{Colors.BOLD}🧬 FOXO3 Longevity Gene:{Colors.END}")
+        print(f"  {Colors.GRAY}⚠️ Data not available - rs2802292 not found in your DNA file{Colors.END}")
+        print(f"  {Colors.GRAY}(Most replicated longevity gene - associated with centenarian status){Colors.END}\n")
+
+    # APOE Section - Complete data
+    if apoe_type:
+        risk_color = Colors.GREEN if '0.6x' in apoe_risk or '1.0x' in apoe_risk else Colors.YELLOW if '2.6x' in apoe_risk else Colors.RED
+
+        print(f"{Colors.BOLD}🧠 APOE Type (rs429358={rs429358_gt} + rs7412={rs7412_gt}):{Colors.END}")
+        print(f"  {Colors.BOLD}Type:{Colors.END} {Colors.BOLD}{apoe_type}{Colors.END}")
+        print(f"  {Colors.BOLD}Alzheimer Risk:{Colors.END} {risk_color}{apoe_risk}{Colors.END} vs. average")
+        print(f"  {Colors.BOLD}Assessment:{Colors.END} {apoe_description}\n")
+
+        if apoe_recommendations:
+            print(f"{Colors.BOLD}📋 Personalized Recommendations:{Colors.END}")
+            for rec in apoe_recommendations:
+                print(f"  {rec}")
+            print()
+
+    # APOE Section - Incomplete data
+    elif rs429358_gt or rs7412_gt:
+        print(f"{Colors.BOLD}🧠 APOE Genotype (Incomplete Data):{Colors.END}")
+        if rs429358_gt and not rs7412_gt:
+            print(f"  {Colors.YELLOW}⚠ Only rs429358 available ({rs429358_gt}) - missing rs7412{Colors.END}")
+            print(f"  Cannot determine complete APOE type without both SNPs.")
+            if rs429358_gt == 'CC':
+                print(f"  {Colors.RED}Note: CC indicates ε4/ε4 (highest risk) - consider follow-up testing{Colors.END}")
+            elif rs429358_gt in ['CT', 'TC']:
+                print(f"  Note: You have one ε4 allele - could be ε2/ε4 or ε3/ε4 depending on rs7412")
+            else:  # TT
+                print(f"  Note: No ε4 allele - could be ε2/ε2, ε2/ε3, or ε3/ε3 depending on rs7412")
+        elif rs7412_gt and not rs429358_gt:
+            print(f"  {Colors.YELLOW}⚠ Only rs7412 available ({rs7412_gt}) - missing rs429358{Colors.END}")
+            print(f"  Cannot determine complete APOE type without both SNPs.")
+            if rs7412_gt == 'TT':
+                print(f"  Note: You have TWO ε2 alleles - likely protective if rs429358 confirms")
+            elif rs7412_gt in ['CT', 'TC']:
+                print(f"  Note: You have ONE ε2 allele - could be ε2/ε3 or ε2/ε4 depending on rs429358")
+            else:  # CC
+                print(f"  Note: No ε2 allele - could be ε3/ε3, ε3/ε4, or ε4/ε4 depending on rs429358")
+        print(f"\n  {Colors.GRAY}Recommendation: Consider 23andMe, AncestryDNA, or clinical APOE testing{Colors.END}")
+        print(f"  {Colors.GRAY}for complete genotype information.{Colors.END}\n")
+
+    # APOE Section - No data at all
+    else:
+        print(f"{Colors.BOLD}🧠 APOE Genotype:{Colors.END}")
+        print(f"  {Colors.GRAY}⚠️ Data not available - neither rs429358 nor rs7412 found in your DNA file{Colors.END}")
+        print(f"  {Colors.GRAY}APOE is the strongest genetic risk factor for Alzheimer's disease.{Colors.END}")
+        print(f"\n  {Colors.GRAY}Recommendation: Consider 23andMe, AncestryDNA, or clinical APOE testing.{Colors.END}")
+        print(f"  {Colors.GRAY}APOE testing is particularly important if you have family history of Alzheimer's.{Colors.END}\n")
+
+    # Combined interpretation
+    if foxo3_longevity and apoe_type:
+        print(f"{Colors.BOLD}🔬 Combined Profile:{Colors.END}")
+
+        if 'STRONG' in foxo3_longevity and 'ε4' in apoe_type:
+            print(f"  {Colors.YELLOW}You have FOXO3 longevity genetics which may partially offset APOE ε4 risk.{Colors.END}")
+            print(f"  {Colors.YELLOW}Focus on prevention strategies - your longevity genes give you time to benefit!{Colors.END}")
+        elif 'STRONG' in foxo3_longevity:
+            print(f"  {Colors.GREEN}Excellent combination! Strong longevity genetics + favorable/normal cognitive aging profile.{Colors.END}")
+        elif 'ε2' in apoe_type:
+            print(f"  {Colors.GREEN}Great cognitive aging protection from APOE ε2!{Colors.END}")
+
+        print()
+
+    print(f"{Colors.GRAY}{'─'*80}{Colors.END}\n")
+
+HEALTH_LONGEVITY = LONGEVITY_COGNITIVE_AGING  # Keep alias for backward compatibility
+
 HEALTH_COGNITIVE = {
-    'rs429358_cognition': {  # APOE ε4
-        'gene': 'APOE', 'condition': 'Cognitive decline, memory',
-        'evidence': 'Memory performance, age-related decline',
-        'TT': 'Better memory performance (no ε4)',
-        'CT': 'Moderate cognitive decline risk (ε3/ε4)',
-        'CC': 'Faster cognitive decline risk (ε4/ε4)',
-    },
+    # Note: APOE is now in LONGEVITY_COGNITIVE_AGING section above for consolidated interpretation
     'rs17070145': {  # KIBRA
         'gene': 'KIBRA', 'condition': 'Memory performance',
         'evidence': 'Episodic memory association',
@@ -1517,13 +1712,17 @@ def analyze_dna(filepath):
         (HEALTH_COVID19, "COVID-19 & Blood Type"),
         (HEALTH_AUTOIMMUNE, "Autoimmune & Inflammation"),
         (HEALTH_BONE_KIDNEY, "Bone, Kidney & Vascular"),
-        (HEALTH_LONGEVITY, "Longevity & Aging"),
+        (LONGEVITY_COGNITIVE_AGING, "Longevity & Cognitive Aging ⭐"),
         (HEALTH_COGNITIVE, "Cognitive Function & Memory"),
         (HEALTH_PAIN, "Pain Sensitivity"),
         (HEALTH_ADDICTION, "Addiction Susceptibility"),
     ]:
         results = analyze_category(s, category_dict, category_name)
         print_results(results, category_name.upper(), show_evidence=False)
+
+        # Print personalized APOE + FOXO3 interpretation after longevity section
+        if category_dict is LONGEVITY_COGNITIVE_AGING:
+            interpret_apoe_foxo3(s)
 
     # Mood & Mental Health
     print_section("MOOD, MENTAL HEALTH & NEUROTRANSMITTERS")
@@ -1556,8 +1755,7 @@ def analyze_dna(filepath):
         results = analyze_category(s, category_dict, category_name)
         print_results(results, category_name.upper(), show_evidence=False)
 
-    # Athletic Polygenic Score
-    print_section("ATHLETIC PERFORMANCE POLYGENIC SCORE")
+    # Athletic Polygenic Score (prints its own header)
     analyze_athletic_performance(s)
 
     # Y-Haplogroup
