@@ -10,6 +10,7 @@ Local analysis of AncestryDNA raw data. No data leaves your machine.
 2. Download GWAS summary statistics (for cognitive score):
    - Register at https://thessgac.com/
    - Download `GWAS_EA_excl23andMe.txt` (Lee et al. 2018)
+   - Rename to `EA_GWAS.txt` for easier handling
    - Place in this directory
 3. Run the analysis:
 
@@ -19,7 +20,12 @@ uv run analyze_dna.py AncestryDNA.txt
 
 # Run individual modules
 uv run athletic_score.py AncestryDNA.txt
-uv run cognitive_score.py AncestryDNA.txt [p_threshold]
+
+# Cognitive score - multiple approaches
+uv run cognitive_score.py AncestryDNA.txt                    # Default (p<0.05)
+uv run cognitive_score.py AncestryDNA.txt --top 500          # Top 500 SNPs (RECOMMENDED)
+uv run cognitive_score.py AncestryDNA.txt --top-analysis     # Compare different top N values
+uv run cognitive_score.py AncestryDNA.txt --compare          # Compare p-value thresholds
 ```
 
 ## Modules
@@ -45,7 +51,14 @@ Calculates educational attainment / cognitive ability polygenic score using Lee 
 - 10.1 million SNPs in full dataset
 - Explains ~11-13% of educational attainment variance
 - Correlates with intelligence (r ≈ 0.7)
-- Adjustable p-value thresholds (0.05, 0.001, 5e-8)
+- **NEW: Top SNPs approach** - Use `--top 500` for better accuracy with high-achievers
+  - Focuses on highest-impact variants only
+  - Reduces noise from weak-effect SNPs
+  - Better for detecting exceptional cognitive potential
+- Multiple analysis modes:
+  - Standard p-value thresholds (0.05, 0.001, 5e-8)
+  - Top N SNPs selection (10, 100, 500, 1000, etc.)
+  - Comparison modes to find your optimal approach
 - **Requires GWAS summary statistics file** (see Usage)
 
 ## Data Sources

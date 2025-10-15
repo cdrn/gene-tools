@@ -1,3 +1,16 @@
 .claude
 .venv
-AncestryDNA.txt
+AncestryDNA*
+ancestryDNA*
+__pycache__
+
+# Large GWAS data files
+EA_GWAS.txt
+GWAS_*.txt
+*.sumstats
+lee2018_ea_sumstats.txt.gz
+
+# Personal genetic data
+*.23andme
+*.ancestry
+*.ftdna
