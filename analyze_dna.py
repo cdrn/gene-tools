@@ -470,6 +470,88 @@ LONGEVITY_COGNITIVE_AGING = {
 }
 
 # ============================================================================
+# LD-BASED SNP PREDICTION
+# ============================================================================
+
+def predict_foxo3_from_ld(snps_obj):
+    """
+    Predict rs2802292 (FOXO3 longevity SNP) from proxy SNPs in high LD
+
+    Based on research: rs2802292 has 7+ proxy SNPs with r² 0.89-0.99
+    These SNPs form a longevity haplotype that's highly conserved.
+    """
+    # Proxy SNPs in strong LD with rs2802292 (r² > 0.89)
+    # Source: PMC6606898, various FOXO3 longevity studies
+    FOXO3_PROXIES = {
+        'rs2802288': {  # Very strong proxy (r² ≈ 0.95-0.99)
+            'TT': 'TT',  # If proxy is TT, target is TT (longevity allele)
+            'GT': 'GT',  # Heterozygous
+            'GG': 'GG',  # Non-longevity allele
+            'r2': 0.97
+        },
+        'rs2764264': {  # Another FOXO3 longevity SNP (moderate LD, r² ≈ 0.7-0.8)
+            'TT': 'TT',  # Both are longevity markers
+            'CT': 'GT',  # Heterozygous
+            'CC': 'GG',
+            'r2': 0.75
+        },
+        'rs12202234': {  # Strong LD (r² ≈ 0.90-0.95)
+            'TT': 'TT',
+            'CT': 'GT',
+            'CC': 'GG',
+            'r2': 0.92
+        },
+        'rs3800230': {  # Strong LD (r² ≈ 0.89-0.93)
+            'AA': 'TT',  # Different alleles, but correlated
+            'AG': 'GT',
+            'GG': 'GG',
+            'r2': 0.91
+        },
+    }
+
+    predictions = []
+
+    for proxy_rsid, proxy_info in FOXO3_PROXIES.items():
+        proxy_data = snps_obj.snps[snps_obj.snps.index == proxy_rsid]
+
+        if len(proxy_data) > 0 and not proxy_data['genotype'].isna().all():
+            proxy_gt = str(proxy_data['genotype'].iloc[0])
+
+            # Normalize (handle reversed genotypes)
+            if proxy_gt in ['TC', 'CT']:
+                proxy_gt = 'CT' if 'C' in proxy_gt and 'T' in proxy_gt else proxy_gt
+            elif proxy_gt in ['GA', 'AG']:
+                proxy_gt = 'AG' if 'A' in proxy_gt and 'G' in proxy_gt else proxy_gt
+
+            if proxy_gt in proxy_info:
+                predicted_gt = proxy_info[proxy_gt]
+                r2 = proxy_info['r2']
+                predictions.append({
+                    'genotype': predicted_gt,
+                    'r2': r2,
+                    'proxy_rsid': proxy_rsid,
+                    'proxy_genotype': proxy_gt
+                })
+
+    if not predictions:
+        return None
+
+    # Use the prediction from the highest r² proxy
+    best_prediction = max(predictions, key=lambda x: x['r2'])
+
+    # Check for consensus (all predictions agree)
+    consensus = all(p['genotype'] == best_prediction['genotype'] for p in predictions)
+
+    return {
+        'genotype': best_prediction['genotype'],
+        'r2': best_prediction['r2'],
+        'num_proxies': len(predictions),
+        'consensus': consensus,
+        'method': 'LD-based prediction',
+        'proxies': predictions
+    }
+
+# ============================================================================
 # PERSONALIZED FOXO3 + APOE INTERPRETATION
 # ============================================================================
 
@@ -489,15 +571,26 @@ def interpret_apoe_foxo3(snps_obj):
     if len(rs7412_data) > 0 and not rs7412_data['genotype'].isna().all():
         rs7412_gt = str(rs7412_data['genotype'].iloc[0])
 
-    # Get FOXO3 genotypes
+    # Get FOXO3 genotypes (with LD-based prediction fallback)
     rs2802292_data = snps_obj.snps[snps_obj.snps.index == 'rs2802292']
     rs2764264_data = snps_obj.snps[snps_obj.snps.index == 'rs2764264']
 
     rs2802292_gt = None
-    rs2764264_gt = None
+    rs2802292_predicted = False
+    rs2802292_prediction_info = None
 
+    # Try direct genotyping first
     if len(rs2802292_data) > 0 and not rs2802292_data['genotype'].isna().all():
         rs2802292_gt = str(rs2802292_data['genotype'].iloc[0])
+    else:
+        # Try LD-based prediction
+        prediction = predict_foxo3_from_ld(snps_obj)
+        if prediction:
+            rs2802292_gt = prediction['genotype']
+            rs2802292_predicted = True
+            rs2802292_prediction_info = prediction
+
+    rs2764264_gt = None
     if len(rs2764264_data) > 0 and not rs2764264_data['genotype'].isna().all():
         rs2764264_gt = str(rs2764264_data['genotype'].iloc[0])
 
@@ -578,12 +671,44 @@ def interpret_apoe_foxo3(snps_obj):
 
     # FOXO3 Section
     if foxo3_longevity:
-        print(f"{Colors.BOLD}🧬 FOXO3 Longevity Gene (rs2802292: {rs2802292_gt}):{Colors.END}")
-        print(f"  {foxo3_description}\n")
+        if rs2802292_predicted:
+            # Show predicted result with details
+            print(f"{Colors.BOLD}🧬 FOXO3 Longevity Gene (rs2802292: {rs2802292_gt}*):{Colors.END}")
+            print(f"  {foxo3_description}\n")
+
+            # Show prediction details
+            info = rs2802292_prediction_info
+            confidence_color = Colors.GREEN if info['r2'] > 0.9 else Colors.YELLOW if info['r2'] > 0.8 else Colors.RED
+
+            print(f"  {Colors.CYAN}* Predicted from {info['num_proxies']} proxy SNP(s) (not directly genotyped){Colors.END}")
+            print(f"  {Colors.GRAY}Method: {info['method']}{Colors.END}")
+            print(f"  {Colors.GRAY}Confidence: {confidence_color}r² = {info['r2']:.2f}{Colors.END} {Colors.GRAY}(LD correlation){Colors.END}")
+
+            if info['consensus']:
+                print(f"  {Colors.GREEN}✓ All proxy SNPs agree on this prediction{Colors.END}")
+            else:
+                print(f"  {Colors.YELLOW}⚠ Multiple predictions - using highest r² proxy{Colors.END}")
+
+            # Show which proxy was used
+            best = max(info['proxies'], key=lambda x: x['r2'])
+            print(f"  {Colors.GRAY}Primary proxy: {best['proxy_rsid']} ({best['proxy_genotype']}) → r² = {best['r2']:.2f}{Colors.END}")
+
+            if info['r2'] < 0.85:
+                print(f"\n  {Colors.YELLOW}⚠ Note: Moderate confidence prediction - for curiosity only{Colors.END}")
+                print(f"  {Colors.YELLOW}Consider 23andMe or whole genome sequencing for definitive results{Colors.END}")
+
+            print()
+        else:
+            # Directly genotyped
+            print(f"{Colors.BOLD}🧬 FOXO3 Longevity Gene (rs2802292: {rs2802292_gt}):{Colors.END}")
+            print(f"  {foxo3_description}")
+            print(f"  {Colors.GREEN}✓ Directly genotyped (high confidence){Colors.END}\n")
     else:
         print(f"{Colors.BOLD}🧬 FOXO3 Longevity Gene:{Colors.END}")
-        print(f"  {Colors.GRAY}⚠️ Data not available - rs2802292 not found in your DNA file{Colors.END}")
-        print(f"  {Colors.GRAY}(Most replicated longevity gene - associated with centenarian status){Colors.END}\n")
+        print(f"  {Colors.GRAY}⚠️ Data not available - rs2802292 not found and no proxy SNPs detected{Colors.END}")
+        print(f"  {Colors.GRAY}(Most replicated longevity gene - associated with centenarian status){Colors.END}")
+        print(f"\n  {Colors.GRAY}Missing proxies checked: rs2802288, rs2764264, rs12202234, rs3800230{Colors.END}")
+        print(f"  {Colors.GRAY}Recommendation: Consider 23andMe or whole genome sequencing{Colors.END}\n")
 
     # APOE Section - Complete data
     if apoe_type:
@@ -652,26 +777,69 @@ HEALTH_LONGEVITY = LONGEVITY_COGNITIVE_AGING  # Keep alias for backward compatib
 
 HEALTH_COGNITIVE = {
     # Note: APOE is now in LONGEVITY_COGNITIVE_AGING section above for consolidated interpretation
+
+    # Working Memory & Executive Function
+    'rs4680_cognition': {  # COMT Val158Met
+        'gene': 'COMT', 'condition': 'Working memory, executive function, attention',
+        'evidence': 'Val158Met - most studied cognitive SNP, validated across populations',
+        'AA': 'Met/Met - "Worrier" - better memory, attention, information processing under normal conditions',
+        'GA': 'Val/Met - intermediate cognitive performance',
+        'GG': 'Val/Val - "Warrior" - modest reduction in executive function, better under stress',
+    },
+    'rs1006737_cognition': {  # CACNA1C
+        'gene': 'CACNA1C', 'condition': 'Working memory, prefrontal function',
+        'evidence': 'L-type calcium channel - validated in multiple studies',
+        'GG': 'Better working memory performance',
+        'AG': 'Intermediate working memory',
+        'AA': 'Impaired working memory, reduced prefrontal efficiency',
+    },
+    'rs1044396': {  # CHRNA4
+        'gene': 'CHRNA4', 'condition': 'Attention, working memory, parietal cortex function',
+        'evidence': 'Nicotinic receptor - validated for attention and cognitive control',
+        'CC': 'Reduced parietal cortex activity during attention tasks',
+        'CT': 'Intermediate attention performance',
+        'TT': 'Robust parietal cortex activity, enhanced attention and working memory',
+    },
+
+    # Memory Performance
     'rs17070145': {  # KIBRA
-        'gene': 'KIBRA', 'condition': 'Memory performance',
-        'evidence': 'Episodic memory association',
+        'gene': 'KIBRA', 'condition': 'Episodic memory performance',
+        'evidence': 'Replicated association with memory recall',
         'CC': 'Reduced memory abilities',
         'CT': 'Increased memory performance (T allele +24% recall)',
         'TT': 'Greatly increased memory performance',
     },
+    'rs6265_cognition': {  # BDNF
+        'gene': 'BDNF', 'condition': 'Learning, memory consolidation',
+        'evidence': 'Val66Met affects learning and neuroplasticity',
+        'GG': 'Val/Val - better learning, memory, neuroplasticity',
+        'GA': 'Val/Met - impaired motor learning, reduced BDNF secretion',
+        'AA': 'Met/Met - reduced learning efficiency, faster cognitive decline with age',
+    },
+
+    # Cognitive Decline & Alzheimer's Risk
+    'rs11136000': {  # CLU (Clusterin)
+        'gene': 'CLU', 'condition': 'Cognitive decline, memory, Alzheimer\'s disease',
+        'evidence': '2nd strongest AD risk SNP after APOE - validated in multiple GWAS',
+        'TT': 'Lower risk of cognitive decline, better memory maintenance',
+        'CT': 'Intermediate risk - faster memory decline in presymptomatic stages',
+        'CC': 'Higher risk - accelerated cognitive decline, poorer memory scores, faster MCI→AD progression',
+    },
+    'rs9331896': {  # CLU (Clusterin)
+        'gene': 'CLU', 'condition': 'Cognitive decline, hippocampal function',
+        'evidence': 'Strongest CLU SNP for AD risk - affects CLU expression in hippocampus',
+        'CC': 'Lower Alzheimer\'s risk, better memory maintenance (protective)',
+        'CT': 'Intermediate risk of cognitive decline (OR 1.18)',
+        'TT': 'Higher AD risk, faster presymptomatic memory decline, altered hippocampal CLU expression',
+    },
+
+    # Other markers
     'rs363050': {  # SNAP25
         'gene': 'SNAP25', 'condition': 'Intelligence, IQ',
-        'evidence': 'Original findings failed to replicate',
+        'evidence': 'Original findings failed to replicate - interpret with caution',
         'AA': 'Original (unreplicated) study suggested +2.8 PIQ vs GG',
         'AG': 'Intermediate (unreplicated findings)',
         'GG': 'Reference genotype (note: original IQ findings did not replicate)',
-    },
-    'rs6265_cognition': {  # BDNF
-        'gene': 'BDNF', 'condition': 'Learning, memory',
-        'evidence': 'Val66Met affects learning',
-        'GG': 'Val/Val - better learning, memory',
-        'GA': 'Val/Met - impaired motor skills learning',
-        'AA': 'Met/Met - reduced learning efficiency, faster Alzheimer decline',
     },
 }
 
@@ -1594,15 +1762,39 @@ def get_interpretation_color(interpretation):
     """Determine color based on interpretation text"""
     interpretation_lower = interpretation.lower()
 
+    # Good/protective indicators - CHECK FIRST (highest priority)
+    good_keywords = [
+        'protective', 'better', 'fast metabol',
+        'advantage', 'more empathetic',
+        'resilient', 'warrior', 'tolerant', 'optimal', 'enhanced',
+        'improved', 'better memory maintenance'
+    ]
+
+    # Protective risk phrases (contain "risk" but are good)
+    protective_risk_phrases = [
+        'lower risk', 'reduced risk', 'decreased risk',
+        'lower alzheimer', 'reduced alzheimer', 'decreased alzheimer',
+        'lower ad risk', 'reduced ad risk',
+        'typical risk', 'normal risk'
+    ]
+
+    # Check for protective/good phrases first
+    if any(keyword in interpretation_lower for keyword in good_keywords):
+        return Colors.GREEN
+
+    if any(phrase in interpretation_lower for phrase in protective_risk_phrases):
+        return Colors.GREEN
+
     # Bad/risk indicators - RED
     bad_keywords = [
         'elevated risk', 'higher risk', 'high risk', 'increased risk',
-        'poor metabol', 'reduced', 'lower', 'deficiency', 'carrier',
+        'poor metabol', 'reduced', 'deficiency', 'carrier',
         'slow metabol', 'worse', 'poorer', 'depression risk', 'anxiety risk',
         'addiction risk', 'disease risk', 'overload', 'mutation',
         'homozygous', 'much higher', 'strong flush', 'less empathetic',
         'reduced receptor', 'lower d2', 'lower expression', 'altered',
-        'reduced function', 'impaired', 'susceptible'
+        'reduced function', 'impaired', 'susceptible', 'faster decline',
+        'accelerated cognitive decline', 'poorer memory'
     ]
 
     # Neutral/moderate indicators - YELLOW
@@ -1611,23 +1803,9 @@ def get_interpretation_color(interpretation):
         'normal', 'heterozygous', 'may need', 'slightly'
     ]
 
-    # Good/protective indicators - GREEN
-    good_keywords = [
-        'protective', 'better', 'normal', 'fast metabol', 'higher',
-        'lower risk', 'typical risk', 'advantage', 'more empathetic',
-        'resilient', 'warrior', 'tolerant', 'optimal', 'enhanced',
-        'improved'
-    ]
-
-    # Check for bad first (highest priority)
+    # Check for bad
     if any(keyword in interpretation_lower for keyword in bad_keywords):
-        # Exception: "lower risk" is good, not bad
-        if 'lower risk' not in interpretation_lower and 'reduced risk' not in interpretation_lower:
-            return Colors.RED
-
-    # Then check for good
-    if any(keyword in interpretation_lower for keyword in good_keywords):
-        return Colors.GREEN
+        return Colors.RED
 
     # Then check for moderate
     if any(keyword in interpretation_lower for keyword in moderate_keywords):
