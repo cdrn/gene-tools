@@ -4,14 +4,22 @@ Local analysis of AncestryDNA raw data. No data leaves your machine.
 
 ## Usage
 
+**This project uses [uv](https://github.com/astral-sh/uv) for Python dependency management.**
+
 1. Place your `AncestryDNA.txt` file in this directory
-2. Run the analysis:
+2. Download GWAS summary statistics (for cognitive score):
+   - Register at https://thessgac.com/
+   - Download `GWAS_EA_excl23andMe.txt` (Lee et al. 2018)
+   - Place in this directory
+3. Run the analysis:
 
 ```bash
-uv run python analyze_dna.py AncestryDNA.txt
+# Full analysis (includes all modules)
+uv run analyze_dna.py AncestryDNA.txt
 
-# Run athletic performance score separately
-uv run python athletic_score.py AncestryDNA.txt
+# Run individual modules
+uv run athletic_score.py AncestryDNA.txt
+uv run cognitive_score.py AncestryDNA.txt [p_threshold]
 ```
 
 ## Modules
@@ -31,6 +39,15 @@ Calculates endurance vs power spectrum based on 19 validated SNPs:
 - Inflammation/recovery (IL6, TNF, COL5A1)
 - Fuel metabolism (PPARA, UCP2, SLC16A1)
 
+### `cognitive_score.py` - Educational Attainment Polygenic Score
+Calculates educational attainment / cognitive ability polygenic score using Lee et al. (2018) GWAS data:
+- Based on 766,345 individuals (excluding 23andMe)
+- 10.1 million SNPs in full dataset
+- Explains ~11-13% of educational attainment variance
+- Correlates with intelligence (r ≈ 0.7)
+- Adjustable p-value thresholds (0.05, 0.001, 5e-8)
+- **Requires GWAS summary statistics file** (see Usage)
+
 ## Data Sources
 - FDA Pharmacogenetic Associations
 - ACMG Secondary Findings v3.2
@@ -39,9 +56,19 @@ Calculates endurance vs power spectrum based on 19 validated SNPs:
 - SNPedia references for all markers
 
 ## Requirements
+
+This project uses **uv** for dependency management. Install uv first:
 ```bash
-pip install snps pandas numpy
-# or
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Dependencies are managed via `pyproject.toml` and will be automatically installed when you run:
+```bash
+uv run analyze_dna.py
+```
+
+Manual installation (if needed):
+```bash
 uv pip install snps pandas numpy
 ```
 
@@ -50,3 +77,5 @@ uv pip install snps pandas numpy
 - Color-coded risk assessment
 - Direct SNPedia links for each variant
 - Athletic performance score with visual spectrum
+- Educational attainment polygenic score (if GWAS data available)
+- Y-chromosome haplogroup (for males)
