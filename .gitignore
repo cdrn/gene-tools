@@ -1,16 +1,66 @@
-.claude
-.venv
-AncestryDNA*
-ancestryDNA*
-__pycache__
+# Private genetic data files
+ancestryDNA*.txt
+AncestryDNA*.txt
+*.dna.txt
 
-# Large GWAS data files
+# GWAS data files (large)
 EA_GWAS.txt
 GWAS_*.txt
 *.sumstats
+*.sumstats.txt.gz
+lee2018_ea_sumstats.txt
 lee2018_ea_sumstats.txt.gz
 
-# Personal genetic data
-*.23andme
-*.ancestry
-*.ftdna
+# Personal analysis outputs
+*_personal.txt
+*_private.txt
+ancestry.log
+SNP_VERIFICATION_PROGRESS.md
+COGNITIVE_PARADOX_REPORT.md
+
+# Generated files
+*.pyc
+*.cpython-*.pyc
+__pycache__/
+.python-version
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# UV
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.log
+
+# VCF files and imputation outputs
+chr*.vcf.gz
+chr*.vcf.gz.tbi
+*_imputed.vcf.gz
+*_input.vcf.gz
+
+# Binary tools
+*.jar
+
+# Analysis outputs (keep examples only)
+output/
+results/
+imputed/
+vcf_input/
+reference_panels/
+
+# Y-haplogroup tool
+/tmp/Y-Haplogroup-Predictor/
