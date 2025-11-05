@@ -9,7 +9,6 @@ import snps
 import sys
 from collections import defaultdict
 from athletic_score import analyze_athletic_performance
-from cognitive_score import analyze_cognitive_score
 
 
 # ANSI color codes
@@ -162,12 +161,12 @@ TIER1_CARDIOVASCULAR = {
         'CT': 'ONE ε2 allele - see combined interpretation with rs429358 below',
         'TT': 'TWO ε2 alleles - see combined interpretation with rs429358 below',
     },
-    'rs1333049': {  # 9p21
+    'rs1333049': {  # 9p21 locus
         'gene': 'CDKN2A/B', 'condition': 'Coronary artery disease',
-        'evidence': 'GWAS P<10^-50, OR 1.9',
-        'CC': 'Elevated CAD risk (~1.9x)',
-        'CG': 'Moderate CAD risk (~1.5x)',
-        'GG': 'Typical CAD risk',
+        'evidence': 'GWAS P<10^-50 (OR=1.9, G allele OR=0.816 protective)',
+        'CC': 'Elevated CAD/MI risk (~1.9x, +50% vs GG)',
+        'CG': 'Moderate CAD risk (~1.5x, +25% vs GG)',
+        'GG': 'Lower CAD risk (protective)',
     },
     'rs6025': {  # Factor V Leiden
         'gene': 'F5', 'condition': 'Blood clots (thrombophilia)',
@@ -241,12 +240,12 @@ HEALTH_METABOLIC = {
         'CG': 'Elevated fasting glucose',
         'GG': 'Higher glucose, T2D risk',
     },
-    'rs738409': {  # PNPLA3
+    'rs738409': {  # PNPLA3 (I148M)
         'gene': 'PNPLA3', 'condition': 'Fatty liver disease',
-        'evidence': 'Strong association, OR ~2x',
-        'CC': 'Normal risk',
-        'CG': 'Elevated NAFLD risk',
-        'GG': 'High NAFLD risk (~2x)',
+        'evidence': 'Strong association (NAFLD OR=3.41, Cirrhosis OR=1.86)',
+        'CC': 'Normal risk (wild-type)',
+        'CG': 'Elevated NAFLD risk (~2x)',
+        'GG': 'High NAFLD/cirrhosis/HCC risk (I148M homozygous)',
     },
     'rs780094': {  # GCKR
         'gene': 'GCKR', 'condition': 'Triglycerides, liver fat',
@@ -265,12 +264,12 @@ HEALTH_CARDIOVASCULAR_EXTENDED = {
         'CG': 'Slightly elevated',
         'GG': 'Higher triglyceride tendency',
     },
-    'rs662799': {  # APOA5
+    'rs662799': {  # APOA5 (-1131T>C)
         'gene': 'APOA5', 'condition': 'Triglycerides/HDL',
-        'evidence': 'Strong association',
-        'GG': 'Typical',
-        'AG': 'Elevated triglycerides',
-        'AA': 'Higher triglycerides, lower HDL',
+        'evidence': 'Strong association (PMC8378982, MI OR=1.44)',
+        'AA': 'Typical triglycerides (protective)',
+        'AG': 'Elevated triglycerides (+11% per G allele)',
+        'GG': 'Higher triglycerides (+36%), lower HDL, increased CVD risk',
     },
     'rs2383206': {  # CDKN2A/B
         'gene': 'CDKN2A/B', 'condition': 'Heart attack',
@@ -392,10 +391,10 @@ HEALTH_BONE_KIDNEY = {
     },
     'rs4293393': {  # UMOD
         'gene': 'UMOD', 'condition': 'Chronic kidney disease',
-        'evidence': 'GWAS validated',
-        'CC': 'Lower risk',
-        'CT': 'Moderate risk',
-        'TT': 'Elevated risk',
+        'evidence': 'GWAS validated (PNAS 2022, CKD OR=1.25)',
+        'AA': 'Lower CKD risk (protective, lower uromodulin)',
+        'AG': 'Moderate CKD risk',
+        'GG': 'Elevated CKD risk, salt-sensitive hypertension',
     },
     'rs1799983': {  # NOS3
         'gene': 'NOS3', 'condition': 'Nitric oxide, blood pressure',
@@ -456,17 +455,17 @@ LONGEVITY_COGNITIVE_AGING = {
     # Other longevity markers
     'rs3764261': {  # CETP
         'gene': 'CETP', 'condition': 'HDL cholesterol, longevity',
-        'evidence': 'Higher HDL, longevity association',
-        'GG': '✓ Lower CETP activity - higher HDL ("good" cholesterol), longevity association',
-        'AG': 'Reduced CETP activity - higher HDL',
-        'AA': 'Typical CETP activity',
+        'evidence': 'Higher HDL, longevity association (PMC3293889)',
+        'AA': '✓ Lower CETP activity - higher HDL ("good" cholesterol), longevity association',
+        'CA': 'Reduced CETP activity - higher HDL',
+        'CC': 'Typical CETP activity - typical HDL levels',
     },
-    'rs9536314': {  # KLOTHO
+    'rs9536314': {  # KLOTHO (F352V, KL-VS variant)
         'gene': 'KLOTHO', 'condition': 'Anti-aging, cognition',
-        'evidence': 'Anti-aging gene - klotho protein',
-        'GA': '✓ KL-VS heterozygote - better cognition, may enhance longevity',
-        'GG': 'Typical',
-        'AA': 'KL-VS homozygote - may reduce lifespan (rare)',
+        'evidence': 'Anti-aging gene - klotho protein (PMC4978356)',
+        'TT': 'Typical klotho function',
+        'GT': '✓ KL-VS heterozygote - better cognition, may enhance longevity',
+        'GG': 'KL-VS homozygote - may reduce lifespan (rare)',
     },
 }
 
@@ -1941,12 +1940,6 @@ def analyze_dna(filepath):
     if not (cli_args and cli_args.no_athletic):
         analyze_athletic_performance(s)
 
-    # Cognitive / Educational Attainment Polygenic Score
-    # Using p < 0.001 for statistically robust analysis (~21,000 SNPs)
-    if not (cli_args and cli_args.no_cognitive):
-        threshold = cli_args.cognitive_threshold if cli_args else 0.001
-        analyze_cognitive_score(s, p_threshold=threshold)
-
     # Y-Haplogroup
     if s.sex == 'Male' and not (cli_args and cli_args.no_haplogroup):
         print_section("Y-CHROMOSOME HAPLOGROUP (Paternal Lineage)")
@@ -2024,8 +2017,6 @@ if __name__ == "__main__":
 
     parser.add_argument('filepath', nargs='?', default='AncestryDNA.txt',
                         help='Path to AncestryDNA raw data file (default: AncestryDNA.txt)')
-    parser.add_argument('--no-cognitive', action='store_true',
-                        help='Skip cognitive/educational attainment analysis')
     parser.add_argument('--no-athletic', action='store_true',
                         help='Skip athletic performance analysis')
     parser.add_argument('--no-haplogroup', action='store_true',
@@ -2033,9 +2024,7 @@ if __name__ == "__main__":
     parser.add_argument('--health-only', action='store_true',
                         help='Only run health-related analyses')
     parser.add_argument('--quick', action='store_true',
-                        help='Quick mode: skip polygenic scores (athletic & cognitive)')
-    parser.add_argument('--cognitive-threshold', type=float, default=0.001,
-                        help='P-value threshold for cognitive score (default: 0.001)')
+                        help='Quick mode: skip polygenic scores (athletic)')
     parser.add_argument('--verbose', '-v', action='store_true',
                         help='Show detailed output and statistics')
 
@@ -2043,10 +2032,8 @@ if __name__ == "__main__":
 
     # Handle quick mode and health-only mode
     if args.quick:
-        args.no_cognitive = True
         args.no_athletic = True
     if args.health_only:
-        args.no_cognitive = True
         args.no_athletic = True
         args.no_haplogroup = True
 
