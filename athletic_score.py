@@ -21,6 +21,7 @@ class AthleticSNP:
     effect_description: str
     evidence: str
     notes: Optional[str] = None
+    snpedia_url: Optional[str] = None
 
 
 # Athletic Performance SNPs Database
@@ -75,7 +76,46 @@ ATHLETIC_SNPS = {
         power_alleles=['C'],      # Q (glutamine) - normal
         effect_description='AMP deaminase deficiency',
         evidence='Reduced sprint/power capacity with deficiency',
-        notes='T allele = enzyme deficiency, may reduce power output'
+        notes='TT = enzyme deficiency, power drop risk; CC = normal power capacity'
+    ),
+
+    'rs1805086': AthleticSNP(
+        rsid='rs1805086',
+        gene='MSTN',
+        name='K153R (myostatin)',
+        category='muscle_energy',
+        endurance_alleles=['A'],  # K (lysine) - normal myostatin
+        power_alleles=['G'],      # R (arginine) - reduced function
+        effect_description='Myostatin K153R, muscle mass regulation',
+        evidence='PMC3024427: R allele associated with strength athletes (OR=2.02)',
+        notes='AA (KK) = normal; AG/GG (R allele) = increased muscle mass, ultra-rare (~3-4% in Caucasians)',
+        snpedia_url='https://www.snpedia.com/index.php/Rs1805086'
+    ),
+
+    'rs2228570': AthleticSNP(
+        rsid='rs2228570',
+        gene='VDR',
+        name='FokI (Vitamin D receptor)',
+        category='muscle_energy',
+        endurance_alleles=['G'],  # f allele (longer protein, less active)
+        power_alleles=['A'],      # F allele (shorter protein, more active)
+        effect_description='Vitamin D receptor FokI, muscle fiber composition',
+        evidence='SNPedia: rs2228570, multiple studies on muscle/strength',
+        notes='AA (FF) = more active VDR, may favor type-II fibers; GG (ff) = less active VDR',
+        snpedia_url='https://www.snpedia.com/index.php/Rs2228570'
+    ),
+
+    'rs35767': AthleticSNP(
+        rsid='rs35767',
+        gene='IGF1',
+        name='IGF-1 promoter (C/T)',
+        category='muscle_energy',
+        endurance_alleles=['C'],  # Lower IGF-1
+        power_alleles=['T'],      # T allele RAISES IGF-1
+        effect_description='IGF-1 regulation, growth hormone pathway',
+        evidence='PLOS One: T allele = IGF-1 raising, hypertrophy advantage',
+        notes='TT = higher circulating IGF-1, faster hypertrophy; CC = lower IGF-1',
+        snpedia_url='https://www.snpedia.com/index.php/Rs35767'
     ),
 
     'rs8111989': AthleticSNP(
@@ -133,13 +173,14 @@ ATHLETIC_SNPS = {
     'rs1042714': AthleticSNP(
         rsid='rs1042714',
         gene='ADRB2',
-        name='Gln27Glu',
+        name='Gln27Glu (C/G)',
         category='adrenergic',
-        endurance_alleles=['G'],  # Glu
-        power_alleles=['C'],      # Gln
-        effect_description='Beta-2 receptor downregulation',
-        evidence='Bronchodilation, exercise response',
-        notes='G (Glu) = better endurance, bronchodilation'
+        endurance_alleles=['G'],  # G = Glu27 (resists downregulation, bronchodilation)
+        power_alleles=['C'],      # C = Gln27 (baseline)
+        effect_description='Beta-2 receptor downregulation resistance',
+        evidence='Mixed: G (Glu) shows bronchodilation benefit, but no strong endurance performance link in athletes',
+        notes='GG (Glu/Glu) = resists receptor downregulation, better bronchodilation; CC (Gln/Gln) = baseline. Performance association weak.',
+        snpedia_url='https://www.snpedia.com/index.php/Rs1042714'
     ),
 
     'rs4994': AthleticSNP(
@@ -182,9 +223,143 @@ ATHLETIC_SNPS = {
         notes='Ancestry-dependent effects, T generally endurance'
     ),
 
+    'rs56721780': AthleticSNP(
+        rsid='rs56721780',
+        gene='EPAS1',
+        name='HIF-2α Tibetan variant (-886G>C)',
+        category='oxygen',
+        endurance_alleles=['C'],  # C allele decreases IKZF1 binding
+        power_alleles=['G'],
+        effect_description='Tibetan high-altitude hypoxia adaptation',
+        evidence='Sci Rep 2014: C allele freq 0.372 in Tibetans vs 0.010 in Han Chinese',
+        notes='CC = attenuated EPAS1 repression, altitude adaptation (rare in non-East Asian)',
+        snpedia_url='https://www.snpedia.com/index.php/Rs56721780'
+    ),
+
+    'rs2016520': AthleticSNP(
+        rsid='rs2016520',
+        gene='PPARD',
+        name='PPAR-delta (T294C)',
+        category='oxygen',
+        endurance_alleles=['C'],  # C allele binds Sp-1 transcription factor
+        power_alleles=['T'],
+        effect_description='Fat oxidation and slow-fiber gene activation',
+        evidence='PLOS One: C allele in elite endurance athletes, increased PPARD transcription',
+        notes='CC = higher PPARD expression, better fat oxidation, endurance advantage',
+        snpedia_url='https://www.snpedia.com/index.php/Rs2016520'
+    ),
+
+    'rs1801253': AthleticSNP(
+        rsid='rs1801253',
+        gene='ADRB1',
+        name='Arg389Gly (C/G)',
+        category='oxygen',
+        endurance_alleles=['C'],  # Arg389 - higher receptor activity
+        power_alleles=['G'],      # Gly389 - lower receptor activity
+        effect_description='Beta-1 adrenergic receptor, cardiac contractility',
+        evidence='SNPedia rs1801253: Arg389 = better beta-blocker response, cardiac function',
+        notes='CC (Arg/Arg) = higher receptor activity, better endurance training response; GG (Gly/Gly) = lower activity',
+        snpedia_url='https://www.snpedia.com/index.php/Rs1801253'
+    ),
+
+    # ============================================================================
+    # NEUROMOTOR & ADRENERGIC (Brain-Muscle Connection)
+    # ============================================================================
+
+    'rs6265': AthleticSNP(
+        rsid='rs6265',
+        gene='BDNF',
+        name='Val66Met (G/A)',
+        category='neuromotor',
+        endurance_alleles=['G'],  # Val - better motor learning
+        power_alleles=['A'],      # Met - impaired motor learning/retention
+        effect_description='Neuroplasticity, motor skill learning, BDNF secretion',
+        evidence='SNPedia rs6265: Val66Met affects BDNF activity-dependent secretion',
+        notes='GG (Val/Val) = normal BDNF, better motor learning; AA (Met/Met) = reduced secretion, impaired plasticity',
+        snpedia_url='https://www.snpedia.com/index.php/Rs6265'
+    ),
+
+    'rs1800497': AthleticSNP(
+        rsid='rs1800497',
+        gene='ANKK1',
+        name='Taq1A (DRD2) C/T',
+        category='neuromotor',
+        endurance_alleles=['C'],  # A2 allele - normal D2 receptors
+        power_alleles=['T'],      # A1 allele - 40% reduced D2 receptors
+        effect_description='Dopamine D2 receptor density, reward/motivation',
+        evidence='SNPedia rs1800497: T(A1) = 40% reduction in striatal D2 receptors',
+        notes='CC (A2/A2) = normal dopamine receptors, better motivation; TT (A1/A1) = reduced receptors, lower drive',
+        snpedia_url='https://www.snpedia.com/index.php/Rs1800497'
+    ),
+
+    'rs4680': AthleticSNP(
+        rsid='rs4680',
+        gene='COMT',
+        name='Val158Met (G/A)',
+        category='neuromotor',
+        endurance_alleles=['A'],  # Met - low enzyme activity, "worrier"
+        power_alleles=['G'],      # Val - high enzyme activity, "warrior"
+        effect_description='Dopamine breakdown rate, stress resilience',
+        evidence='SNPedia rs4680: Warrior/Worrier, Val=stress resilience, Met=better cognition',
+        notes='AA (Met/Met) = slow dopamine breakdown, better baseline cognition but stress-vulnerable; GG (Val/Val) = fast breakdown, stress resilient',
+        snpedia_url='https://www.snpedia.com/index.php/Rs4680'
+    ),
+
     # ============================================================================
     # INFLAMMATION, RECOVERY & CONNECTIVE TISSUE
     # ============================================================================
+
+    'rs2228145': AthleticSNP(
+        rsid='rs2228145',
+        gene='IL6R',
+        name='Asp358Ala (A/C)',
+        category='inflammation',
+        endurance_alleles=['C'],  # C = 358Ala (increased shedding, lower CRP, anti-inflammatory)
+        power_alleles=['A'],      # A = 358Asp (normal membrane IL-6R, normal IL-6 response)
+        effect_description='IL-6 receptor shedding and inflammation',
+        evidence='Mixed: C allele increases soluble IL-6R (2-fold), lowers CRP; but performance benefit speculative',
+        notes='CC (Ala/Ala) = high IL-6R shedding, lower CRP, anti-inflammatory; AA (Asp/Asp) = normal IL-6 signaling. Endurance link uncertain.',
+        snpedia_url='https://www.snpedia.com/index.php/Rs2228145'
+    ),
+
+    'rs1205': AthleticSNP(
+        rsid='rs1205',
+        gene='CRP',
+        name='C-reactive protein (C/T)',
+        category='inflammation',
+        endurance_alleles=['T'],  # T allele LOWERS CRP by 20%
+        power_alleles=['C'],      # C allele = higher CRP
+        effect_description='C-reactive protein baseline levels',
+        evidence='SNPedia rs1205: Each T allele lowers CRP by 20%',
+        notes='TT = lowest CRP, better recovery; CC = higher baseline inflammation',
+        snpedia_url='https://www.snpedia.com/index.php/Rs1205'
+    ),
+
+    'rs1695': AthleticSNP(
+        rsid='rs1695',
+        gene='GSTP1',
+        name='Ile105Val (A/G)',
+        category='inflammation',
+        endurance_alleles=['A'],  # Ile - more stable enzyme (2-3x)
+        power_alleles=['G'],      # Val - less stable enzyme
+        effect_description='Glutathione S-transferase Pi, oxidative stress clearance',
+        evidence='SNPedia rs1695: Val105 enzyme 2-3x less stable than Ile105',
+        notes='AA (Ile/Ile) = more stable GSTP1, better detox capacity; GG (Val/Val) = less stable enzyme',
+        snpedia_url='https://www.snpedia.com/index.php/Rs1695'
+    ),
+
+    'rs4880': AthleticSNP(
+        rsid='rs4880',
+        gene='SOD2',
+        name='Ala16Val (C/T)',
+        category='inflammation',
+        endurance_alleles=['C'],  # C = Ala (better mitochondrial import, higher activity)
+        power_alleles=['T'],      # T = Val (30-40% reduced activity, poorer import)
+        effect_description='Mitochondrial superoxide dismutase, ROS protection',
+        evidence='Multiple studies: Ala (C) imported more efficiently than Val (T), 30-40% activity difference',
+        notes='CC (Ala/Ala) = better mitochondrial import, higher SOD2 activity; TT (Val/Val) = reduced import & activity',
+        snpedia_url='https://www.snpedia.com/index.php/Rs4880'
+    ),
 
     'rs1800795': AthleticSNP(
         rsid='rs1800795',
@@ -225,13 +400,27 @@ ATHLETIC_SNPS = {
     'rs1800012': AthleticSNP(
         rsid='rs1800012',
         gene='COL1A1',
-        name='Type I collagen',
+        name='Type I collagen Sp1 (G/T)',
         category='connective',
-        endurance_alleles=['T'],
-        power_alleles=['G'],
-        effect_description='Collagen strength',
-        evidence='Injury risk, connective tissue',
-        notes='T = stronger collagen, endurance advantage'
+        endurance_alleles=['G'],  # G = normal, lower fracture risk
+        power_alleles=['T'],      # T = "s" allele, INCREASED fracture risk (OR=1.78), lower BMD
+        effect_description='Collagen type I production, bone mineral density',
+        evidence='Meta-analysis: T allele associated with lower BMD, increased osteoporotic fracture risk',
+        notes='GG = normal collagen production; TT = increased fracture risk (OR=1.78), lower bone density',
+        snpedia_url='https://www.snpedia.com/index.php/Rs1800012'
+    ),
+
+    'rs1800255': AthleticSNP(
+        rsid='rs1800255',
+        gene='COL3A1',
+        name='Ala698Thr (G/A)',
+        category='connective',
+        endurance_alleles=['G'],  # G = Ala (normal collagen structure)
+        power_alleles=['A'],      # A = Thr (disrupted triple helix)
+        effect_description='Type III collagen structure, connective tissue integrity',
+        evidence='SNPedia rs1800255: A allele disrupts triple helix, associated with POP (OR=4.79)',
+        notes='GG (Ala/Ala) = normal collagen structure, better integrity; AA (Thr/Thr) = disrupted structure, higher injury risk',
+        snpedia_url='https://www.snpedia.com/index.php/Rs1800255'
     ),
 
     # ============================================================================
@@ -274,6 +463,58 @@ ATHLETIC_SNPS = {
         notes='T = better lactate transport, endurance'
     ),
 
+    'rs470117': AthleticSNP(
+        rsid='rs470117',
+        gene='CPT1B',
+        name='E531K (A/G)',
+        category='fuel',
+        endurance_alleles=['A'],  # A = Glu531 (normal beta-oxidation)
+        power_alleles=['G'],      # G = Lys531 (decreased beta-oxidation)
+        effect_description='Carnitine palmitoyltransferase 1B, fatty acid transport',
+        evidence='PLOS One: G allele decreases mitochondrial beta-oxidation, associated with reduced obesity risk',
+        notes='AA (Glu/Glu) = normal beta-oxidation, endurance; GG (Lys/Lys) = decreased oxidation',
+        snpedia_url='https://www.snpedia.com/index.php/Rs470117'
+    ),
+
+    'rs9939609': AthleticSNP(
+        rsid='rs9939609',
+        gene='FTO',
+        name='Fat mass and obesity (T/A)',
+        category='fuel',
+        endurance_alleles=['T'],  # T = protective, lower BMI
+        power_alleles=['A'],      # A = RISK allele for obesity
+        effect_description='FTO obesity risk, body composition, appetite',
+        evidence='SNPedia rs9939609: A allele OR=1.34 (het) to 1.55 (hom) for obesity',
+        notes='TT = lower obesity risk, better appetite control; AA = +1.55x obesity risk, increased appetite',
+        snpedia_url='https://www.snpedia.com/index.php/Rs9939609'
+    ),
+
+    'rs6721961': AthleticSNP(
+        rsid='rs6721961',
+        gene='NFE2L2',
+        name='NRF2 -617C>A',
+        category='fuel',
+        endurance_alleles=['C'],  # C = normal Nrf2 expression
+        power_alleles=['A'],      # A = reduced Nrf2 basal expression
+        effect_description='NRF2 transcription factor, oxidative stress response',
+        evidence='SNPedia rs6721961: A allele attenuates ARE-mediated gene transcription',
+        notes='CC = normal Nrf2 expression, better antioxidant response; AA = reduced basal Nrf2',
+        snpedia_url='https://www.snpedia.com/index.php/Rs6721961'
+    ),
+
+    'rs1800849': AthleticSNP(
+        rsid='rs1800849',
+        gene='UCP3',
+        name='UCP3 -55C>T',
+        category='fuel',
+        endurance_alleles=['T'],  # T allele - associations with lower BMI in some studies
+        power_alleles=['C'],      # C allele - associated with higher BMI
+        effect_description='Uncoupling protein 3, thermogenesis, energy expenditure',
+        evidence='SNPedia rs1800849: UCP3 promoter polymorphism, cold adaptation',
+        notes='TT = associated with lower BMI in some populations; CC = higher BMI tendency',
+        snpedia_url='https://www.snpedia.com/index.php/Rs1800849'
+    ),
+
     # Note: BDKRB2 -9/+9 is an insertion/deletion, harder to score from SNP data
     # Would need special handling or proxy SNP
 }
@@ -286,6 +527,12 @@ class AthleticScorer:
         self.snps_data = snps_data
         self.results = {}
         self.missing_snps = []
+
+    @staticmethod
+    def complement(allele: str) -> str:
+        """Return complement of DNA base"""
+        comp = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
+        return comp.get(allele.upper(), allele)
 
     def calculate_snp_score(self, snp_info: AthleticSNP) -> Tuple[Optional[int], str, str]:
         """
@@ -300,30 +547,45 @@ class AthleticScorer:
 
         genotype = str(snp_data['genotype'].iloc[0])
 
-        # Count alleles
+        # Create complement allele lists for strand flip compatibility
+        endurance_alleles = set(snp_info.endurance_alleles)
+        power_alleles = set(snp_info.power_alleles)
+        endurance_complements = {self.complement(a) for a in endurance_alleles}
+        power_complements = {self.complement(a) for a in power_alleles}
+
+        # Count alleles (checking both strands)
         endurance_count = 0
         power_count = 0
 
         for allele in genotype:
-            if allele in snp_info.endurance_alleles:
+            if allele in endurance_alleles or allele in endurance_complements:
                 endurance_count += 1
-            elif allele in snp_info.power_alleles:
+            elif allele in power_alleles or allele in power_complements:
                 power_count += 1
 
         # Calculate score
         score = endurance_count - power_count
 
-        # Generate interpretation
-        if score == 2:
-            interpretation = f"Homozygous endurance ({genotype})"
-        elif score == -2:
-            interpretation = f"Homozygous power ({genotype})"
-        elif score == 1:
-            interpretation = f"Endurance advantage ({genotype})"
-        elif score == -1:
-            interpretation = f"Power advantage ({genotype})"
+        # Check if we're on the complement strand
+        flipped_genotype = ''.join([self.complement(a) for a in genotype])
+        is_flipped = (genotype not in ''.join([str(a) for a in endurance_alleles | power_alleles]))
+
+        # Generate interpretation with strand info
+        if is_flipped:
+            strand_info = f"{genotype} [flip: {flipped_genotype}]"
         else:
-            interpretation = f"Neutral/heterozygous ({genotype})"
+            strand_info = genotype
+
+        if score == 2:
+            interpretation = f"Homozygous endurance ({strand_info})"
+        elif score == -2:
+            interpretation = f"Homozygous power ({strand_info})"
+        elif score == 1:
+            interpretation = f"Endurance advantage ({strand_info})"
+        elif score == -1:
+            interpretation = f"Power advantage ({strand_info})"
+        else:
+            interpretation = f"Neutral/heterozygous ({strand_info})"
 
         return score, genotype, interpretation
 
@@ -336,6 +598,7 @@ class AthleticScorer:
             'muscle_energy': 0,
             'adrenergic': 0,
             'oxygen': 0,
+            'neuromotor': 0,
             'inflammation': 0,
             'connective': 0,
             'fuel': 0
@@ -441,7 +704,7 @@ class AthleticScorer:
         # Detailed SNP results
         print(f"\n{BOLD}{YELLOW}Individual SNP Results:{END}")
 
-        for category in ['muscle_energy', 'adrenergic', 'oxygen', 'inflammation', 'connective', 'fuel']:
+        for category in ['muscle_energy', 'adrenergic', 'oxygen', 'neuromotor', 'inflammation', 'connective', 'fuel']:
             cat_snps = [s for s in results['snp_scores'] if s['category'] == category]
             if cat_snps:
                 cat_name = category.replace('_', ' ').upper()
