@@ -391,10 +391,10 @@ HEALTH_BONE_KIDNEY = {
     },
     'rs4293393': {  # UMOD
         'gene': 'UMOD', 'condition': 'Chronic kidney disease',
-        'evidence': 'GWAS validated (PNAS 2022, CKD OR=1.25)',
-        'AA': 'Lower CKD risk (protective, lower uromodulin)',
+        'evidence': 'GWAS validated (PNAS 2022, CKD OR=1.25, T allele=risk)',
+        'AA': 'Elevated CKD risk, salt-sensitive hypertension (T/T on research strand)',
         'AG': 'Moderate CKD risk',
-        'GG': 'Elevated CKD risk, salt-sensitive hypertension',
+        'GG': 'Lower CKD risk (protective, C/C on research strand, lower uromodulin)',
     },
     'rs1799983': {  # NOS3
         'gene': 'NOS3', 'condition': 'Nitric oxide, blood pressure',
@@ -1613,96 +1613,6 @@ TRAITS_THERMOGENESIS = {
 
 
 # ============================================================================
-# Y-CHROMOSOME HAPLOGROUP
-# ============================================================================
-
-def predict_y_haplogroup(snps_obj):
-    """Predict Y-chromosome haplogroup"""
-    if snps_obj.sex != 'Male':
-        return None, 0, {}, "Y haplogroup: not male"
-
-    y_snps = snps_obj.snps[snps_obj.snps['chrom'] == 'Y']
-    if len(y_snps) == 0:
-        return None, 0, {}, "No Y data"
-
-    markers_to_check = [
-        ('rs2032636', {'G': ['I'], 'A': ['D'], 'C': ['T']}),
-        ('rs2032654', {'A': ['I']}),
-        ('rs17306671', {'A': ['I1'], 'T': ['not-I1']}),
-        ('rs2032658', {'T': ['R']}),
-        ('rs17222573', {'G': ['R1a']}),
-        ('rs9306841', {'A': ['R1b'], 'C': ['J1'], 'T': ['G/K']}),
-        ('rs3910', {'T': ['J']}),
-        ('rs2032664', {'A': ['J']}),
-        ('rs2032618', {'C': ['E']}),
-        ('rs2032602', {'T': ['E']}),
-        ('rs9341313', {'G': ['B']}),
-        ('rs2032597', {'A': ['O']}),
-        ('rs3900', {'G': ['H'], 'T': ['N']}),
-    ]
-
-    results = []
-    for rsid, allele_map in markers_to_check:
-        snp_data = snps_obj.snps[snps_obj.snps.index == rsid]
-        if len(snp_data) > 0 and not snp_data['genotype'].isna().all():
-            genotype = str(snp_data['genotype'].iloc[0])
-            if genotype in allele_map:
-                haplogroups = allele_map[genotype]
-                results.append((rsid, genotype, haplogroups))
-
-    haplogroup_votes = defaultdict(list)
-    for rsid, genotype, haplogroups in results:
-        for hg in haplogroups:
-            if not hg.startswith('not-'):
-                haplogroup_votes[hg].append(f"{rsid}={genotype}")
-
-    if not haplogroup_votes:
-        return None, 0, {}, "No diagnostic Y-SNPs found"
-
-    sorted_haplogroups = sorted(haplogroup_votes.items(),
-                                key=lambda x: len(x[1]),
-                                reverse=True)
-
-    best_haplogroup = sorted_haplogroups[0][0]
-    supporting_snps = sorted_haplogroups[0][1]
-    num_markers = len(supporting_snps)
-
-    if num_markers >= 3:
-        confidence = 0.65
-    elif num_markers == 2:
-        confidence = 0.40
-    else:
-        confidence = 0.20
-
-    all_results = {hg: markers for hg, markers in sorted_haplogroups}
-
-    haplogroup_info = {
-        'R1b': 'Western European origin',
-        'R1a': 'Eastern European/Central Asian',
-        'R': 'Eurasian',
-        'I': 'European origin',
-        'I1': 'Scandinavian origin',
-        'I2': 'Southeastern European',
-        'J': 'Middle Eastern origin',
-        'J1': 'Arabian Peninsula',
-        'J2': 'Mediterranean/Caucasus',
-        'E': 'African/Mediterranean',
-        'E1b1a': 'Sub-Saharan African',
-        'E1b1b': 'Mediterranean/Horn of Africa',
-        'G': 'Middle Eastern/Caucasus',
-        'Q': 'Siberian/Native American',
-        'O': 'East Asian origin',
-        'N': 'Northern Eurasian',
-        'H': 'South Asian origin',
-        'B': 'African origin',
-    }
-
-    info = haplogroup_info.get(best_haplogroup, '')
-
-    return best_haplogroup, confidence, all_results, info
-
-
-# ============================================================================
 # ANALYSIS ENGINE
 # ============================================================================
 
@@ -1940,24 +1850,6 @@ def analyze_dna(filepath):
     if not (cli_args and cli_args.no_athletic):
         analyze_athletic_performance(s)
 
-    # Y-Haplogroup
-    if s.sex == 'Male' and not (cli_args and cli_args.no_haplogroup):
-        print_section("Y-CHROMOSOME HAPLOGROUP (Paternal Lineage)")
-        haplogroup, confidence, all_results, info = predict_y_haplogroup(s)
-
-        if haplogroup:
-            conf_color = Colors.GREEN if confidence >= 0.5 else Colors.YELLOW if confidence >= 0.3 else Colors.RED
-            print(f"{Colors.BOLD}Predicted Haplogroup:{Colors.END} {Colors.BOLD}{Colors.CYAN}{haplogroup}{Colors.END}")
-            print(f"{Colors.BOLD}Confidence:{Colors.END} {conf_color}{confidence*100:.0f}%{Colors.END}")
-            print(f"{Colors.BOLD}Info:{Colors.END} {Colors.GREEN}{info}{Colors.END}")
-            print(f"\n{Colors.BOLD}Supporting markers:{Colors.END}")
-            for hg, markers in list(all_results.items())[:5]:
-                print(f"  {Colors.CYAN}{hg}:{Colors.END} {len(markers)} marker(s) - {Colors.GRAY}{', '.join(markers[:3])}{Colors.END}")
-            print(f"\n{Colors.YELLOW}Note:{Colors.END} Consumer DNA tests have limited Y-SNPs.")
-            print(f"{Colors.GRAY}For accurate haplogroup: YFull.com, FamilyTreeDNA, YSEQ.net{Colors.END}")
-        else:
-            print(f"{Colors.GRAY}{info}{Colors.END}")
-
     # Mitochondrial DNA
     print_section("MITOCHONDRIAL DNA (Maternal Lineage)")
     mt_snps = s.snps[s.snps['chrom'] == 'MT']
@@ -2019,8 +1911,6 @@ if __name__ == "__main__":
                         help='Path to AncestryDNA raw data file (default: AncestryDNA.txt)')
     parser.add_argument('--no-athletic', action='store_true',
                         help='Skip athletic performance analysis')
-    parser.add_argument('--no-haplogroup', action='store_true',
-                        help='Skip Y-chromosome haplogroup prediction')
     parser.add_argument('--health-only', action='store_true',
                         help='Only run health-related analyses')
     parser.add_argument('--quick', action='store_true',
@@ -2035,7 +1925,6 @@ if __name__ == "__main__":
         args.no_athletic = True
     if args.health_only:
         args.no_athletic = True
-        args.no_haplogroup = True
 
     try:
         # Store args globally so analyze_dna function can access them
