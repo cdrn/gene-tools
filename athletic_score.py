@@ -821,8 +821,13 @@ class AthleticScorer:
             print("  • Can excel in both endurance and power with proper training")
             print("  • Versatile athletic potential")
 
-        print(f"\n{YELLOW}Note: Genetics is only ~20-30% of athletic performance.{END}")
-        print(f"{YELLOW}Training, nutrition, and psychology matter more!{END}")
+        print(f"\n{BOLD}{RED}⚠ IMPORTANT LIMITATIONS:{END}")
+        print(f"{YELLOW}• This score analyzes only {results['snps_analyzed']} SNPs out of 250+ identified in research{END}")
+        print(f"{YELLOW}• Missing key SNPs: CDKN1A rs236448, VDR rs2228570, and hundreds of GWAS hits{END}")
+        print(f"{YELLOW}• Athletic performance is highly polygenic (thousands of variants){END}")
+        print(f"{YELLOW}• Genetics explains only ~20-30% of athletic performance{END}")
+        print(f"{YELLOW}• This score does NOT reliably predict elite athletic potential{END}")
+        print(f"\n{BOLD}Training, nutrition, and psychology matter FAR more than genetics!{END}")
 
 
 def analyze_athletic_performance(snps_data: snps.SNPs) -> Dict:
