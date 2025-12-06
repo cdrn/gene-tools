@@ -306,9 +306,9 @@ ATHLETIC_SNPS = {
         endurance_alleles=['G'],  # Val - better motor learning
         power_alleles=['A'],      # Met - impaired motor learning/retention
         effect_description='Neuroplasticity, motor skill learning, BDNF secretion',
-        evidence='SNPedia rs6265: Val66Met affects BDNF activity-dependent secretion',
-        effect_size=1.2,  # Motor learning, neuroplasticity
-        notes='GG (Val/Val) = normal BDNF, better motor learning; AA (Met/Met) = reduced secretion, impaired plasticity',
+        evidence='Motor learning, not endurance/power specific',
+        effect_size=1.0,  # NEUTRAL - affects skill acquisition, not endurance vs power
+        notes='GG (Val/Val) = normal BDNF, better motor learning; AA (Met/Met) = reduced secretion, impaired plasticity. NOT an endurance/power marker.',
         snpedia_url='https://www.snpedia.com/index.php/Rs6265'
     ),
 
@@ -320,9 +320,9 @@ ATHLETIC_SNPS = {
         endurance_alleles=['C'],  # A2 allele - normal D2 receptors
         power_alleles=['T'],      # A1 allele - 40% reduced D2 receptors
         effect_description='Dopamine D2 receptor density, reward/motivation',
-        evidence='SNPedia rs1800497: T(A1) = 40% reduction in striatal D2 receptors',
-        effect_size=1.2,  # 40% receptor reduction, motivation
-        notes='CC (A2/A2) = normal dopamine receptors, better motivation; TT (A1/A1) = reduced receptors, lower drive',
+        evidence='Affects motivation for ALL sports, not endurance/power specific',
+        effect_size=1.0,  # NEUTRAL - motivation affects all athletic performance equally
+        notes='CC (A2/A2) = normal dopamine receptors, better motivation; TT (A1/A1) = reduced receptors, lower drive. NOT an endurance/power marker.',
         snpedia_url='https://www.snpedia.com/index.php/Rs1800497'
     ),
 
@@ -334,9 +334,9 @@ ATHLETIC_SNPS = {
         endurance_alleles=['A'],  # Met - low enzyme activity, "worrier"
         power_alleles=['G'],      # Val - high enzyme activity, "warrior"
         effect_description='Dopamine breakdown rate, stress resilience',
-        evidence='SNPedia rs4680: Warrior/Worrier, Val=stress resilience, Met=better cognition',
-        effect_size=1.2,  # Dopamine metabolism, stress resilience
-        notes='AA (Met/Met) = slow dopamine breakdown, better baseline cognition but stress-vulnerable; GG (Val/Val) = fast breakdown, stress resilient',
+        evidence='Warrior/Worrier gene - affects stress response, not physiological endurance/power',
+        effect_size=1.0,  # NEUTRAL - psychological trait, weak/speculative athletic association
+        notes='AA (Met/Met) = slow dopamine breakdown, better baseline cognition but stress-vulnerable; GG (Val/Val) = fast breakdown, stress resilient. NOT a reliable endurance/power marker.',
         snpedia_url='https://www.snpedia.com/index.php/Rs4680'
     ),
 
