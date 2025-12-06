@@ -139,6 +139,19 @@ ATHLETIC_SNPS = {
         notes='A = better endurance, less muscle damage'
     ),
 
+    'rs2306862': AthleticSNP(
+        rsid='rs2306862',
+        gene='LRP5',
+        name='LRP5 (Wnt signaling)',
+        category='muscle_energy',
+        endurance_alleles=['T'],  # Non-C allele
+        power_alleles=['C'],      # C allele - lean mass, strength
+        effect_description='LRP5 Wnt signaling, lean mass, bone density',
+        evidence='Strong lean-mass GWAS signal, replicated in grip strength + power (Genes 2023 review)',
+        effect_size=1.3,  # Strong lean-mass signal from GWAS
+        notes='CC = higher lean mass, better grip strength; TT = lower lean mass tendency'
+    ),
+
     'rs2070744': AthleticSNP(
         rsid='rs2070744',
         gene='NOS3',
@@ -681,19 +694,19 @@ class AthleticScorer:
             else:
                 self.missing_snps.append(rsid)
 
-        # Calculate percentages
-        max_possible_score = len(ATHLETIC_SNPS) * 2
-        endurance_percentage = max(0, (total_score / max_possible_score) * 100)
-        power_percentage = max(0, (-total_score / max_possible_score) * 100)
+        # Calculate percentages (based on max realistic score of ~3.0)
+        max_realistic_score = 3.0
+        endurance_percentage = max(0, min(100, (total_score / max_realistic_score) * 100))
+        power_percentage = max(0, min(100, (-total_score / max_realistic_score) * 100))
 
-        # Determine athletic type
-        if total_score > 5:
+        # Determine athletic type (using effect-size weighted thresholds)
+        if total_score > 1.5:
             athletic_type = "Strong Endurance"
-        elif total_score > 2:
+        elif total_score > 0.5:
             athletic_type = "Moderate Endurance"
-        elif total_score < -5:
+        elif total_score < -1.5:
             athletic_type = "Strong Power/Sprint"
-        elif total_score < -2:
+        elif total_score < -0.5:
             athletic_type = "Moderate Power/Sprint"
         else:
             athletic_type = "Balanced/Mixed"
@@ -739,7 +752,9 @@ class AthleticScorer:
         print(f"\n{BOLD}Performance Spectrum:{END}")
         bar_length = 40
         center = bar_length // 2
-        position = center + int((score / (len(ATHLETIC_SNPS) * 2)) * center)
+        # Scale based on max realistic score (~3.0 for very strong endurance/power)
+        max_score = 3.0
+        position = center + int((score / max_score) * center)
         position = max(0, min(bar_length - 1, position))
 
         bar = ['-'] * bar_length
@@ -780,30 +795,30 @@ class AthleticScorer:
             print(f"  {', '.join(results['missing_snps'])}")
 
         print(f"\n{BOLD}Interpretation:{END}")
-        if score > 5:
+        if score > 1.5:
             print("  Your genetics strongly favor endurance activities:")
             print("  • Marathon, cycling, swimming, triathlon")
             print("  • Better fat oxidation and aerobic capacity")
             print("  • Superior fatigue resistance")
-        elif score > 2:
+        elif score > 0.5:
             print("  Your genetics moderately favor endurance activities:")
             print("  • Distance running, cycling")
             print("  • Good aerobic capacity")
             print("  • Above-average fatigue resistance")
-        elif score < -5:
+        elif score < -1.5:
             print("  Your genetics strongly favor power/sprint activities:")
             print("  • Sprinting, weightlifting, throwing")
             print("  • Fast-twitch muscle fiber dominance")
             print("  • Explosive power generation")
-        elif score < -2:
+        elif score < -0.5:
             print("  Your genetics moderately favor power/sprint activities:")
             print("  • Short sprints, strength training")
             print("  • Good explosive capacity")
             print("  • Above-average power output")
         else:
             print("  Your genetics show a balanced profile:")
-            print("  • Suitable for mixed sports (soccer, basketball)")
-            print("  • Can excel in both endurance and power with training")
+            print("  • Suitable for mixed sports (soccer, basketball, hockey)")
+            print("  • Can excel in both endurance and power with proper training")
             print("  • Versatile athletic potential")
 
         print(f"\n{YELLOW}Note: Genetics is only ~20-30% of athletic performance.{END}")
