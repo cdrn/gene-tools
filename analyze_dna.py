@@ -1549,10 +1549,10 @@ TRAITS_SKIN_AGING = {
     },
     'rs1800012': {  # COL1A1
         'gene': 'COL1A1', 'trait': 'Collagen strength, bone density',
-        'evidence': 'Type I collagen',
-        'GG': 'Normal collagen',
-        'GT': 'Stronger collagen (Sp1 site)',
-        'TT': 'Strongest collagen, better bone density',
+        'evidence': 'Type I collagen Sp1 polymorphism (meta-analysis: PMC5650439)',
+        'GG': 'Normal/optimal collagen production, highest bone density, lowest fracture risk',
+        'GT': 'Intermediate - moderately reduced bone density',
+        'TT': 'Increased fracture risk (OR=1.78-2.97), lower bone density, imbalanced collagen ratio (α1:α2 = 2.3:1 vs normal 2:1)',
     },
     'rs1126809': {  # TYR
         'gene': 'TYR', 'trait': 'Skin pigmentation, melanoma risk',
