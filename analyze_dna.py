@@ -1850,17 +1850,7 @@ def analyze_dna(filepath):
     if not (cli_args and cli_args.no_athletic):
         analyze_athletic_performance(s)
 
-    # Mitochondrial DNA
-    print_section("MITOCHONDRIAL DNA (Maternal Lineage)")
-    mt_snps = s.snps[s.snps['chrom'] == 'MT']
-    if len(mt_snps) > 0:
-        print(f"{Colors.BOLD}Total MT SNPs:{Colors.END} {Colors.GREEN}{len(mt_snps):,}{Colors.END}")
-        print(f"{Colors.BOLD}MT SNPs with data:{Colors.END} {Colors.GREEN}{mt_snps['genotype'].notna().sum():,}{Colors.END}")
-        print(f"\n{Colors.GRAY}For mtDNA haplogroup analysis:{Colors.END}")
-        print(f"  {Colors.BLUE}• James Lick mtDNA: mtdna.james-lick.com{Colors.END}")
-        print(f"  {Colors.BLUE}• FamilyTreeDNA: mtDNA test{Colors.END}")
-    else:
-        print(f"{Colors.GRAY}No mitochondrial DNA data available{Colors.END}")
+    # Mitochondrial DNA section removed - not useful without haplogroup analysis
 
     # Summary
     print_section("ANALYSIS COMPLETE")
