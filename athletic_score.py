@@ -311,7 +311,7 @@ ATHLETIC_SNPS = {
         unfavorable_alleles=['G'],
         effect_description='IL-6 production, inflammation',
         evidence='Inflammation, recovery capacity',
-        weight=0.05,
+        weight=0.03,  # Reduced: correlated with IL6R/CRP
         notes='CC = lower IL-6, less inflammation'
     ),
 
@@ -322,7 +322,7 @@ ATHLETIC_SNPS = {
         unfavorable_alleles=['A'],
         effect_description='TNF-alpha production, muscle damage',
         evidence='Inflammation, muscle damage, recovery',
-        weight=0.05,
+        weight=0.03,  # Reduced: correlated with other inflammation markers
         notes='GG = lower TNF, better recovery from damage'
     ),
 
@@ -428,7 +428,7 @@ ATHLETIC_SNPS = {
         snpedia_url='https://www.snpedia.com/index.php/Rs470117'
     ),
 
-    # Lower priority / trivia
+    # Adrenergic - metabolic context only (not performance in non-asthmatics)
     'rs1042713': AthleticSNP(
         rsid='rs1042713', gene='ADRB2', name='Arg16Gly',
         index='metabolic',
@@ -450,6 +450,18 @@ ATHLETIC_SNPS = {
         weight=0.05,
         notes='GG = better bronchodilation; weak athletic association',
         snpedia_url='https://www.snpedia.com/index.php/Rs1042714'
+    ),
+
+    'rs1801253': AthleticSNP(
+        rsid='rs1801253', gene='ADRB1', name='Arg389Gly',
+        index='metabolic',
+        favorable_alleles=['C'],  # Arg389 (higher activity)
+        unfavorable_alleles=['G'],  # Gly389
+        effect_description='Beta-1 receptor, cardiac contractility',
+        evidence='Cardiac function, weak performance link outside cardio',
+        weight=0.05,
+        notes='CC = better cardiac response; adrenergic ≠ performance in non-asthmatics',
+        snpedia_url='https://www.snpedia.com/index.php/Rs1801253'
     ),
 
     'rs1049434': AthleticSNP(
@@ -508,51 +520,11 @@ ATHLETIC_SNPS = {
         notes='CC = better capillarization'
     ),
 
-    'rs11549465': AthleticSNP(
-        rsid='rs11549465', gene='HIF1A', name='Pro582Ser',
-        index='durability',
-        favorable_alleles=['C'],  # Pro
-        unfavorable_alleles=['T'],  # Ser
-        effect_description='Hypoxia-inducible factor 1-alpha',
-        evidence='Rare variant, altitude adaptation',
-        weight=0.05,
-        notes='Rare, altitude-specific'
-    ),
+    # Dropped: HIF1A rs11549465, EPAS1 rs1867785/rs56721780
+    # Reason: Ancestry-gated noise, redundant with PPARGC1A, 0.05 weight adds no info
 
-    'rs1867785': AthleticSNP(
-        rsid='rs1867785', gene='EPAS1', name='HIF-2α variant',
-        index='durability',
-        favorable_alleles=['T'],
-        unfavorable_alleles=['C'],
-        effect_description='Hypoxia response, altitude adaptation',
-        evidence='Tibetan altitude adaptation, ancestry-dependent',
-        weight=0.05,
-        notes='Ancestry-dependent effects'
-    ),
-
-    'rs56721780': AthleticSNP(
-        rsid='rs56721780', gene='EPAS1', name='HIF-2α Tibetan',
-        index='durability',
-        favorable_alleles=['C'],
-        unfavorable_alleles=['G'],
-        effect_description='Tibetan high-altitude adaptation',
-        evidence='C allele 37% in Tibetans vs 1% in Han Chinese',
-        weight=0.05,
-        notes='Very population-specific (Tibetan)',
-        snpedia_url='https://www.snpedia.com/index.php/Rs56721780'
-    ),
-
-    'rs1801253': AthleticSNP(
-        rsid='rs1801253', gene='ADRB1', name='Arg389Gly',
-        index='durability',
-        favorable_alleles=['C'],  # Arg389 (higher activity)
-        unfavorable_alleles=['G'],  # Gly389
-        effect_description='Beta-1 receptor, cardiac contractility',
-        evidence='Cardiac function, training response',
-        weight=0.05,
-        notes='CC = better cardiac training response',
-        snpedia_url='https://www.snpedia.com/index.php/Rs1801253'
-    ),
+    # Dropped: ADRB1 rs1801253
+    # Reason: Moved to metabolic - adrenergic ≠ performance in non-asthmatics
 }
 
 
@@ -745,20 +717,62 @@ class AthleticScorer:
         # Detailed SNP results by index
         print(f"\n{BOLD}{YELLOW}═══ DETAILED SNP RESULTS ═══{END}\n")
 
+        # Special handling for durability - group by mechanism
+        durability_groups = {
+            'Connective Tissue': ['COL5A1', 'COL1A1', 'COL1A2', 'COL12A1', 'COL3A1'],
+            'Oxidative Stress & Recovery': ['SOD2', 'NFE2L2', 'GSTP1'],
+            'Inflammation': ['IL6R', 'CRP', 'IL6', 'TNF'],
+            'Metabolic Capacity': ['PPARA', 'PPARD', 'PPARGC1A', 'NOS3'],
+            'Other': []  # catch-all
+        }
+
         for index_name in ['output', 'durability', 'adaptation', 'metabolic']:
             index_snps = [s for s in results['snp_scores'] if s['index'] == index_name]
             if index_snps:
                 index_label = index_name.upper() + " INDEX"
                 print(f"{BOLD}{CYAN}{index_label}:{END}")
 
-                for snp in index_snps:
-                    score_symbol = '→' if snp['score'] == 0 else '▲' if snp['score'] > 0 else '▼'
-                    score_color = GREEN if snp['score'] > 0 else RED if snp['score'] < 0 else YELLOW
+                if index_name == 'durability':
+                    # Group durability SNPs by mechanism
+                    for group_name, gene_list in durability_groups.items():
+                        group_snps = [s for s in index_snps if s['gene'] in gene_list]
+                        if group_snps:
+                            print(f"  {BOLD}{group_name}:{END}")
+                            for snp in group_snps:
+                                score_symbol = '→' if snp['score'] == 0 else '▲' if snp['score'] > 0 else '▼'
+                                score_color = GREEN if snp['score'] > 0 else RED if snp['score'] < 0 else YELLOW
+                                print(f"    {snp['gene']} {snp['name']} ({snp['rsid']}) [wt:{snp['weight']:.2f}] {score_color}{score_symbol} {snp['score']:+.2f}{END}")
+                                # Show SNPedia link for high-weight SNPs (≥0.15)
+                                snp_obj = ATHLETIC_SNPS.get(snp['rsid'])
+                                if snp['weight'] >= 0.15 and snp_obj and snp_obj.snpedia_url:
+                                    print(f"      SNPedia: {snp_obj.snpedia_url}")
+                                if snp['notes']:
+                                    print(f"      {snp['notes']}")
 
-                    print(f"  {BOLD}{snp['gene']}{END} {snp['name']} ({snp['rsid']}) [weight: {snp['weight']:.2f}]")
-                    print(f"    {score_color}{score_symbol} {snp['interpretation']}{END} (score: {snp['score']:+.2f})")
-                    if snp['notes']:
-                        print(f"    {snp['notes']}")
+                    # Catch remaining durability SNPs not in groups
+                    remaining = [s for s in index_snps if s['gene'] not in sum(durability_groups.values(), [])]
+                    if remaining:
+                        print(f"  {BOLD}Other:{END}")
+                        for snp in remaining:
+                            score_symbol = '→' if snp['score'] == 0 else '▲' if snp['score'] > 0 else '▼'
+                            score_color = GREEN if snp['score'] > 0 else RED if snp['score'] < 0 else YELLOW
+                            print(f"    {snp['gene']} {snp['name']} ({snp['rsid']}) [wt:{snp['weight']:.2f}] {score_color}{score_symbol} {snp['score']:+.2f}{END}")
+                            if snp['notes']:
+                                print(f"      {snp['notes']}")
+                else:
+                    # Normal display for other indices
+                    for snp in index_snps:
+                        score_symbol = '→' if snp['score'] == 0 else '▲' if snp['score'] > 0 else '▼'
+                        score_color = GREEN if snp['score'] > 0 else RED if snp['score'] < 0 else YELLOW
+
+                        print(f"  {BOLD}{snp['gene']}{END} {snp['name']} ({snp['rsid']}) [weight: {snp['weight']:.2f}]")
+                        print(f"    {score_color}{score_symbol} {snp['interpretation']}{END} (score: {snp['score']:+.2f})")
+                        # Show SNPedia link for high-weight SNPs (≥0.15)
+                        snp_obj = ATHLETIC_SNPS.get(snp['rsid'])
+                        if snp['weight'] >= 0.15 and snp_obj and snp_obj.snpedia_url:
+                            print(f"    SNPedia: {snp_obj.snpedia_url}")
+                        if snp['notes']:
+                            print(f"    {snp['notes']}")
                 print()
 
         # Missing SNPs
