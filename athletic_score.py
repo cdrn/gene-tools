@@ -68,12 +68,12 @@ ATHLETIC_SNPS = {
     'rs17602729': AthleticSNP(
         rsid='rs17602729', gene='AMPD1', name='Q12X',
         index='output',
-        favorable_alleles=['C'],  # Normal enzyme
-        unfavorable_alleles=['T'],  # Deficiency
+        favorable_alleles=['G'],  # Normal enzyme (Q12)
+        unfavorable_alleles=['A'],  # Deficiency (stop codon)
         effect_description='AMP deaminase - muscle energy burst',
         evidence='OR=2.17 for power deficit with deficiency (PMC12152022)',
         weight=0.4,
-        notes='TT = enzyme deficiency, power drop; CC = normal',
+        notes='GG = normal enzyme; AA = deficiency, power drop',
         snpedia_url='https://www.snpedia.com/index.php/Rs17602729'
     ),
 
