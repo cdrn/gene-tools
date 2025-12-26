@@ -89,27 +89,19 @@ ATHLETIC_SNPS = {
         snpedia_url='https://www.snpedia.com/index.php/Rs2306862'
     ),
 
-    'rs2228570': AthleticSNP(
-        rsid='rs2228570', gene='VDR', name='FokI',
-        index='output',
-        favorable_alleles=['A'],  # F allele (more active VDR)
-        unfavorable_alleles=['G'],  # f allele
-        effect_description='Vitamin D receptor - muscle fiber composition',
-        evidence='Replicated links to strength, jump height, injury risk',
-        weight=0.3,
-        notes='AA (FF) = more active VDR, type-II fiber advantage',
-        snpedia_url='https://www.snpedia.com/index.php/Rs2228570'
-    ),
+    # Dropped: VDR rs2228570 (FokI)
+    # Reason: Mixed/inconsistent evidence across studies
+    # 2024: muscle mass in soccer players, 2023: NO performance in track athletes
 
     'rs1805086': AthleticSNP(
         rsid='rs1805086', gene='MSTN', name='K153R',
         index='output',
         favorable_alleles=['G'],  # R allele (reduced myostatin)
-        unfavorable_alleles=['A'],  # Normal myostatin
+        unfavorable_alleles=['A'],  # K allele (normal myostatin)
         effect_description='Myostatin reduction, muscle mass regulation',
-        evidence='R allele OR=2.02 in strength athletes (PMC3024427)',
+        evidence='Meta-analysis: R allele OR=2.02 in strength athletes (PMC9690375)',
         weight=0.3,
-        notes='GG (RR) = reduced myostatin, more muscle mass (ultra-rare ~3-4%)',
+        notes='GG (RR) = reduced myostatin, greater muscle mass (rare: 3% Caucasians, 22% Africans)',
         snpedia_url='https://www.snpedia.com/index.php/Rs1805086'
     ),
 
@@ -118,14 +110,14 @@ ATHLETIC_SNPS = {
     # ============================================================================
 
     'rs12722': AthleticSNP(
-        rsid='rs12722', gene='COL5A1', name='Type V collagen',
+        rsid='rs12722', gene='COL5A1', name='Type V collagen (BstUI)',
         index='durability',
-        favorable_alleles=['T'],  # Optimal tendon stiffness
-        unfavorable_alleles=['C'],
-        effect_description='Collagen V structure, tendon stiffness',
-        evidence='Running economy, injury risk studies',
+        favorable_alleles=['C'],  # Lower injury risk
+        unfavorable_alleles=['T'],  # Higher injury risk, faster endurance
+        effect_description='Collagen V structure, injury resistance',
+        evidence='Meta-analysis: CC protective against tendon-ligament injury (PMC6197339)',
         weight=0.4,
-        notes='TT = optimal tendon stiffness, lower injury risk',
+        notes='CC = decreased injury risk (protective); TT = faster running but injury-prone',
         snpedia_url='https://www.snpedia.com/index.php/Rs12722'
     ),
 
@@ -133,35 +125,29 @@ ATHLETIC_SNPS = {
         rsid='rs1800012', gene='COL1A1', name='Type I collagen Sp1',
         index='durability',
         favorable_alleles=['G'],  # Normal collagen
-        unfavorable_alleles=['T'],  # Increased fracture risk
+        unfavorable_alleles=['T'],  # "s" allele - increased fracture risk
         effect_description='Collagen I production, bone mineral density',
-        evidence='T allele OR=1.78 for fracture, lower BMD (meta-analysis)',
+        evidence='Meta-analysis: TT OR=1.97 for fractures, 4x hip fracture risk (PMC11751553)',
         weight=0.4,
-        notes='GG = normal; TT = increased fracture risk, lower bone density',
+        notes='GG = normal BMD; TT = lower BMD, increased fracture risk (OR=1.97)',
         snpedia_url='https://www.snpedia.com/index.php/Rs1800012'
     ),
 
     'rs42524': AthleticSNP(
         rsid='rs42524', gene='COL1A2', name='Type I collagen α2',
         index='durability',
-        favorable_alleles=['G'],  # Protective
-        unfavorable_alleles=['A'],  # Injury risk
-        effect_description='Type I collagen α2 chain, complements COL1A1',
-        evidence='Injury risk, durability associations',
+        favorable_alleles=['G'],  # Protective against ACL injury
+        unfavorable_alleles=['C'],  # Risk allele
+        effect_description='Type I collagen α2 chain, ACL injury risk',
+        evidence='CC genotype: OR=6.0 for ACL injury, OR=5.5 for tendinopathy',
         weight=0.4,
-        notes='Complements COL1A1 for connective tissue integrity'
+        notes='GG = protective; CC = 6x ACL injury risk, 5.5x tendinopathy risk',
+        snpedia_url='https://www.snpedia.com/index.php/Rs42524'
     ),
 
-    'rs970547': AthleticSNP(
-        rsid='rs970547', gene='COL12A1', name='Type XII collagen',
-        index='durability',
-        favorable_alleles=['A'],  # Lower injury risk
-        unfavorable_alleles=['G'],  # Higher risk
-        effect_description='Tendon stiffness, ACL/soft tissue injury',
-        evidence='Soft tissue injury associations, tendon mechanics',
-        weight=0.4,
-        notes='AA = better tendon mechanics, lower soft tissue injury risk'
-    ),
+    # Dropped: COL12A1 rs970547
+    # Reason: Meta-analysis shows NO association with ACL injury (PMC8049422)
+    # Evidence is conflicting across populations, inconsistent gender effects
 
     'rs4880': AthleticSNP(
         rsid='rs4880', gene='SOD2', name='Ala16Val',
@@ -719,7 +705,7 @@ class AthleticScorer:
 
         # Special handling for durability - group by mechanism
         durability_groups = {
-            'Connective Tissue': ['COL5A1', 'COL1A1', 'COL1A2', 'COL12A1', 'COL3A1'],
+            'Connective Tissue': ['COL5A1', 'COL1A1', 'COL1A2', 'COL3A1'],
             'Oxidative Stress & Recovery': ['SOD2', 'NFE2L2', 'GSTP1'],
             'Inflammation': ['IL6R', 'CRP', 'IL6', 'TNF'],
             'Metabolic Capacity': ['PPARA', 'PPARD', 'PPARGC1A', 'NOS3'],
